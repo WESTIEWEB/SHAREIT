@@ -1,0 +1,18 @@
+// register user
+# POST http://localhost:3600/users/login 
+# Content-Type: application/json
+
+#     {
+#         "email": "ilochibuike1@yahoo.com",
+#         "password": "12341234"
+#     }
+
+# // register chat user
+POST  http://localhost:3600/chat-engine/authenticate-chat-user
+Content-Type: application/json
+
+    {
+        "username":"chibuike",
+        "email": "ilochibuike@gmail.com",
+        "first_name": "Ilo",
+    }

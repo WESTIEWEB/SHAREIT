@@ -1,0 +1,1 @@
+export const projectID = import.meta.env.VITE_APP_CHAT_ENGINE_PROJECT_ID;

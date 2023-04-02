@@ -32,11 +32,28 @@ export const loginStyles = makeStyles((theme) => ({
     },
     buttn:{
         width: '100% !important',
+        cursor: 'pointer',
     },
     inputLabel:{
         textAlign: 'left',
         width: '100%',
         fontSize: '1em',
+    },
+    cancelI: {
+        position: 'absolute',
+        top: '20px',
+        right: '1em',
+        fontSize: '2em',
+        color: 'blue',
+        border: 'none',
+        outline: 'none',
+        '&:hover': {
+            cursor: 'pointer',
+            color: 'rgba(255,0,0,0.8)'
+        }
+    },
+    disabledBtn: {
+        cursor: 'not-allowed !important',
     },
         '@media (max-width: 768px)': {
             box2: {
@@ -49,6 +66,7 @@ export const loginStyles = makeStyles((theme) => ({
 
 export const LoginForm = styled('form')({
     marginTop: '50px',
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -60,6 +78,9 @@ export const LoginForm = styled('form')({
     transform: 'scale(1)',
     background: 'rgba(255,255,255,0.8)',
     minHeight: '20rem',
+    '@media (max-width: 768px)': {
+        width: '100%',
+    }
 })
 
 export const LoginFiled = styled('div')({

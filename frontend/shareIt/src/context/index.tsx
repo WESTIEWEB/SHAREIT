@@ -43,16 +43,20 @@ const AppProvider = ({ children }: IAppContext) => {
                 if(res.data.status == 'success') {
                     console.log(res.data);
                     toast.success(res.data.message);
-                    localStorage.setItem('token', res.data.token);
-                    localStorage.setItem('username', res.data.username);
+                    localStorage.setItem('token', res.data.data.token);
+                    localStorage.setItem('username', res.data.data.username);
+
+                    //invoke authUser function
+                    authUser({ username: res.data.data.username, secret: res.data.data.username });
                     setTimeout(() => {
-                        window.location.href = "/home";
+                        window.location.href = "/";
                     }, 1000)
                 }
             })
 
-        }catch(err) {
+        }catch(err:any) {
             console.log(err);
+            toast.error(err.response.data.message);
         }
     }
   return (
@@ -62,7 +66,7 @@ const AppProvider = ({ children }: IAppContext) => {
         user,
         setUser,
         Logout,
-        loginConfig
+        loginConfig,
     }}>
         {children}
     </AppContext.Provider>

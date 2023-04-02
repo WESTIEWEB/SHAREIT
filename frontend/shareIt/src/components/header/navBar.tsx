@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box/Box';
 import { MenuList, Paragraph, headerStyles } from './styles';
 import { Typography } from '@material-ui/core';
 import logo from '../../assets/logo2.svg';
-import {IoMdArrowDropdownCircle, IoMdArrowDropupCircle} from 'react-icons/io'
+import {IoMdArrowDropdownCircle, IoMdArrowDropupCircle} from 'react-icons/io';
 import { useAppContext } from '../../context'; 
 import { IContextInterface } from '../../interface';
 

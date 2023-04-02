@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserInstance = void 0;
 const mongoose_1 = require("mongoose");
 const userSchema = new mongoose_1.Schema({
-    name: { type: String, trim: true },
+    username: { type: String, trim: true },
     email: { type: String, unique: true, trim: true, toLowerCase: true },
     phone: { type: String, unique: true, trim: true },
     salt: { type: String, trim: true },

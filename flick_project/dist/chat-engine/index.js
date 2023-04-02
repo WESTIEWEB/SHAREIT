@@ -8,15 +8,21 @@ const axios_1 = __importDefault(require("axios"));
 const createChatUser = async (req, res) => {
     const { username } = req.body;
     try {
-        const res = await axios_1.default.post(`${process.env.CHAT_ENGINE_URL}/users/`, {
+        // const isUser = await UserInstance.findOne({email: email.trim().toLowerCase()})
+        // if(!isUser) {
+        //     return res.status(400).json({
+        //         message: 'User not found, please register first'
+        //     })
+        // }
+        const resp = await axios_1.default.post(`${process.env.CHAT_ENGINE_URL}/users/`, {
             username: username,
-            secret: process.env.CHAT_ENGINE_SECRET
+            secret: username
         }, {
             headers: {
                 "PRIVATE-KEY": process.env.CHAT_ENGINE_KEY
             }
         });
-        console.log(res.data);
+        console.log(resp.data);
     }
     catch (error) {
         console.log(error);

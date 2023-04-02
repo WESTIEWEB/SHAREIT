@@ -9,13 +9,25 @@ import { useEffect } from 'react';
 const AuthForm = () => {
   const classes = useStyles();
   const [value, setValue] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   const { authUser, setUser, user } = useAppContext() as IContextInterface;
+
+  //get user from local storage
+  useEffect(() => {
+    const Isuser = localStorage.getItem('username');
+    if(Isuser) {
+      setUsername(Isuser);
+    }
+  }, [])
 
   //form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setUser({ username: value })
-    authUser({username: value, secret: value});
+    if(!username) {
+      authUser({ username: value, secret: value });
+    }
+    authUser({username, secret: username});
     setUser({} as IUserInterface);
   }
   console.log("user", user)

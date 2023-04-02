@@ -2,7 +2,7 @@ import Joi from 'joi';
 import bcrypt from 'bcrypt';
 
 export const registerSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required().label('Confirm password').messages({'any.only':'{{#label}} does not match'}),
@@ -18,7 +18,7 @@ export const loginSchema = Joi.object({
 export const chatUserSchema = Joi.object({
     username: Joi.string().required(),
     first_name: Joi.string(),
-    email: Joi.string().email().required()
+    email: Joi.string().email(),
 })
 
 export const options = {

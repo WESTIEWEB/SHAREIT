@@ -6,7 +6,7 @@ export interface IUserInterface {
     toObject: any;
     dataValues: any;
     _id: string;
-    name: string;
+    username: string;
     email: string;
     phone: string;
     password: string;
@@ -14,7 +14,7 @@ export interface IUserInterface {
 }
 
 const userSchema = new Schema<IUserInterface>({
-    name: {type:String, trim: true},
+    username: {type:String, trim: true},
     email: {type:String, unique: true, trim: true, toLowerCase: true},
     phone: {type:String, unique: true, trim: true},
     salt: {type:String, trim: true},

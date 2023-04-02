@@ -4,14 +4,14 @@ import { CreateChatUserDto } from '../dto';
 import { CHAT_ENGINE_SECRET, CHAT_ENGINE_URL, PRIVATE_KEY } from '../config';
 
 export const createChatUser = async (data: CreateChatUserDto) => {
-    const { username, email } = data;
+    const { username } = data;
     console.log(data)
-    const res = await axios.put(CHAT_ENGINE_URL, 
+    console.log(CHAT_ENGINE_URL, PRIVATE_KEY)
+    const res = await axios.put(`${CHAT_ENGINE_URL}/users/`, 
         {
             username: username,
-            secret: CHAT_ENGINE_SECRET,
+            secret: username,
             first_name: username,
-            email: email
         },
         {
             headers: {

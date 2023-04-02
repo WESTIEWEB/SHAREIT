@@ -7,7 +7,7 @@ exports.verifyPassword = exports.generateHash = exports.generateSalt = exports.o
 const joi_1 = __importDefault(require("joi"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.registerSchema = joi_1.default.object({
-    name: joi_1.default.string().required(),
+    username: joi_1.default.string().required(),
     email: joi_1.default.string().email().required(),
     password: joi_1.default.string().min(6).pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     confirmPassword: joi_1.default.string().valid(joi_1.default.ref('password')).required().label('Confirm password').messages({ 'any.only': '{{#label}} does not match' }),
@@ -21,7 +21,7 @@ exports.loginSchema = joi_1.default.object({
 exports.chatUserSchema = joi_1.default.object({
     username: joi_1.default.string().required(),
     first_name: joi_1.default.string(),
-    email: joi_1.default.string().email().required()
+    email: joi_1.default.string().email(),
 });
 exports.options = {
     abortEarly: false,

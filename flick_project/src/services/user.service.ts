@@ -3,13 +3,14 @@ import { IUserInterface, UserInstance } from '../model/user';
 import { generateHash, generateSalt, verifyPassword } from '../utils/validation';
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import { IuserDto } from '../dto/user.dto';
-import { JWT_SECRET } from '../config';
+import { CHAT_ENGINE_URL, JWT_SECRET, PRIVATE_KEY, PROJECT_ID } from '../config';
 import { CreateUserDto, UserLoginDto } from '../dto';
+import axios from 'axios';
 
 // ===== user registration services ===== //
 export const registerUser = async (input: CreateUserDto) => {
    
-    const { name, email, phone, password } = input;
+    const { username, email, phone, password } = input;
 
     //trim email
     const trimedEmail = email.trim().toLowerCase();
@@ -27,7 +28,7 @@ export const registerUser = async (input: CreateUserDto) => {
 
 
     const user = await UserInstance.create({
-        name,
+        username,
         phone,
         email: trimedEmail,
         salt,
@@ -44,9 +45,22 @@ export const registerUser = async (input: CreateUserDto) => {
 
     // jwt token
     const token =jwt.sign({id: user._id, email: user.email}, JWT_SECRET, {expiresIn: '1d'}) as unknown as JwtPayload;
+
+    // function to create a chat user
+    const chatResposne = await axios.put(`${CHAT_ENGINE_URL}/users/`, 
+        {
+            username: username,
+            secret: password,
+        },
+        {
+            headers: {
+            "Private-Key": PRIVATE_KEY
+            }
+        });
     return {
         token,
-        ...userObj
+        ...userObj,
+        chatAccount:{...chatResposne.data}
     }
     
 }
@@ -80,9 +94,21 @@ export const LoginUser = async (input: UserLoginDto) => {
     delete userObj.password;
     delete userObj.salt;
 
+    // get chat user
+
+    const chatResposne = await axios.get(`${CHAT_ENGINE_URL}/users/me/`,
+        {
+            headers: {
+            "Project-ID": PROJECT_ID,
+            "User-Name": user.username,
+            "User-Secret": password
+            }
+        });
+
     // return user object
     return {
         token,
-        ...userObj
+        ...userObj,
+        chatAcct: chatResposne.data
     }
 }

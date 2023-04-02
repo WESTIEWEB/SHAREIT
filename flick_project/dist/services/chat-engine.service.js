@@ -7,13 +7,13 @@ exports.createChatUser = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../config");
 const createChatUser = async (data) => {
-    const { username, email } = data;
+    const { username } = data;
     console.log(data);
-    const res = await axios_1.default.put(config_1.CHAT_ENGINE_URL, {
+    console.log(config_1.CHAT_ENGINE_URL, config_1.PRIVATE_KEY);
+    const res = await axios_1.default.put(`${config_1.CHAT_ENGINE_URL}/users/`, {
         username: username,
-        secret: config_1.CHAT_ENGINE_SECRET,
+        secret: username,
         first_name: username,
-        email: email
     }, {
         headers: {
             "private-key": config_1.PRIVATE_KEY

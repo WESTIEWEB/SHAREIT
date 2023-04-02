@@ -1,6 +1,6 @@
 export interface CreateUserDto {
     email: string;
     phone: string;
-    name: string;
+    username: string;
     password: string;
 }

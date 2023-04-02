@@ -101,6 +101,9 @@ export const homeStyles = makeStyles((theme) => ({
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
+        },
+        icons:{
+            right: '1em',
         }
     }
 }));
@@ -118,6 +121,9 @@ export const BGImage = styled('img')({
         height: '30em',
         width: '90%',
         left: 'auto',
+    },
+    '@media (max-width:468px)':{
+        height: '40em'
     }
 
 });

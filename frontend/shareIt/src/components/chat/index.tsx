@@ -2,9 +2,9 @@ import React from 'react'
 import { chatStyles } from './styles'
 import { Box } from '@material-ui/core';
 import { PrettyChatWindow } from 'react-chat-engine-pretty'
-import { projectID } from '../../utils';
-import { useAppContext } from '../../context';
-import { IContextInterface } from '../../interface';
+import { projectID } from '@/utils';
+import { useAppContext } from '@/context';
+import { IContextInterface } from '@/interface';
 import {
     MultiChatSocket,
     MultiChatWindow,
@@ -27,15 +27,18 @@ const Chat = (props: IChatProps) => {
   return (
     <Box className={classes.chatContainer}>
       <Box className={classes.chatWindow}>
-        <PrettyChatWindow
+        {/* <PrettyChatWindow
             projectId = {projectID}
             username={props.form.data.username}
             secret={props.form.data.secret}
             height='100vh'
             style={{backgroundColor: '#fff !important'}}
+        /> */}
+        <MultiChatSocket {...chatProps} />
+        <MultiChatWindow 
+          {...chatProps}
+          renderChatHeader={(chat) => <div style={{background:'red', fontSize:'2em'}}> chat </div>}
         />
-        {/* <MultiChatSocket {...chatProps} /> */}
-        {/* <MultiChatWindow {...chatProps} style={{width: '80%'}} /> */}
       </Box>
     </Box>
   )

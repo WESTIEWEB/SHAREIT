@@ -14,11 +14,10 @@ function App() {
       <ToastContainer />
       <Router>
         <Routes>
-          <Route path='/' element={<h1>Home</h1>} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/auth-page' element={<AuthForm />} />
           <Route path='/chat-apk' element={<ChatModal />} />
-          <Route path='/home' element={<Home />} />
+          <Route path='/' element={<Home />} />
         </Routes>
       </Router>
     </>

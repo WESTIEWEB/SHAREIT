@@ -5,13 +5,14 @@ import { Link } from 'react-router-dom';
 import multipleCard from '../../assets/multipleApp.svg';
 import { useAppContext } from '../../context';
 import { IContextInterface } from '../../interface';
+import { MdCancelPresentation } from 'react-icons/md';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(true);
 
-    const { loginConfig } = useAppContext() as IContextInterface;
+    const { loginConfig, authUser } = useAppContext() as IContextInterface;
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -22,6 +23,11 @@ const LoginPage = () => {
         setPassword(e.target.value);
         if(e.target.value.length > 6) setIsDisabled(false);
         else setIsDisabled(true);
+    }
+
+    //hancled cancel button
+    const handleCancel = () => {
+        window.location.href = '/';
     }
 
     //A function that handle login form submission
@@ -35,13 +41,15 @@ const LoginPage = () => {
             <BGimage src={multipleCard} />
             <Box className={classes.box2}>
                 <LoginForm onSubmit={handleSubmit}>
+                    {/* <Button variant='outlined' color='primary'>back</Button> */}
+                    <MdCancelPresentation onClick={handleCancel} className={classes.cancelI} />
                     <Typography className={classes.loginTitle} variant='h4'>Login</Typography>
                     <LoginFiled>
                         <Typography className={classes.inputLabel} variant='h6'>Email</Typography>
                         <InputField onChange={handleEmailChange} name='email' type='text' />
                         <Typography className={classes.inputLabel} variant='h6'>Password</Typography>
                         <InputField onChange={handlePasswordChange} name='password' type='password' />
-                        <Button type='submit' className={classes.buttn} variant='contained' color='primary'>Login</Button>
+                        <Button disabled={isDisabled} type='submit' style={{ cursor: isDisabled? 'not-allowed': 'pointer'}} className={`${classes.buttn}`} variant='contained' color='primary'>Login</Button>
                         <Typography className={classes.inputLabel} variant='h6'>
                             Not yet a user? click {' '}
                             <Link to={'/register'}>

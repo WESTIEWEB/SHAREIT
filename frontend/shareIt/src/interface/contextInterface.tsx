@@ -1,3 +1,4 @@
+import { IFormInterface } from './formInterface';
 import { IUserInterface } from './userInterface';
 
 export interface IContextInterface {
@@ -9,4 +10,10 @@ export interface IContextInterface {
     form: Record<string, any>;
     Logout: () => void;
     loginConfig: (loginObj: IUserInterface) => void;
+    chatSecr: string;
+    userName: string;
+    userEmail: string;
+    setChatSecr: React.Dispatch<React.SetStateAction<{}>>;
+    getUserProfile: () => void;
+    registerConfig: (registerObj: IFormInterface) => void;
 }

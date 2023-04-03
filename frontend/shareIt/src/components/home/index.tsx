@@ -15,6 +15,23 @@ const Home = () => {
     const handleChatClick = () => {
         setShowChat(!showChat);
     }
+
+    const isAuth = localStorage.getItem('token');
+
+    const GreetUser = () => {
+        if(!isAuth) {
+            return <Button className={classes.button} variant='contained' color='primary'>
+                        Get Started
+                    </Button>
+        } 
+        else {
+            return (
+                <Button className={classes.button} variant='contained' color='primary'>
+                    Hi {localStorage.getItem('username')}😎
+                </Button>
+            )
+        }
+    }
   return (
     <>
         <Box className={classes.container}>
@@ -29,10 +46,8 @@ const Home = () => {
                         One secure platform to pay, get paid, and manage all your <br/> finances better!
                     </Typography>
                     <Box className={classes.buttonDiv}>
-                        <Link style={{textDecoration:'none'}} to={'/login'}>
-                            <Button className={classes.button} variant='contained' color='primary'>
-                            Get Started
-                            </Button>
+                        <Link style={{textDecoration:'none'}} to={`${isAuth && '#'} /login`}>
+                            <GreetUser />
                         </Link>
                     </Box>
                 </Box>

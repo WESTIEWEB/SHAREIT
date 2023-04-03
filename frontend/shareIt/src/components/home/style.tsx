@@ -25,13 +25,16 @@ export const homeStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
-        height: '30em',
+        height: '30em !important',
         textAlign: 'left',
         placeItems: 'center',
         alignItems: 'center',
         position: 'absolute',
         top: '3em',
         left: '0',
+        "@media (max-width: 400px)": {
+            top: '4.5em'
+        }
     },
     titleText:{
         fontSize: '3em',
@@ -51,6 +54,9 @@ export const homeStyles = makeStyles((theme) => ({
     },
     button:{
         width: '15em',
+        "@media (max-width: 768px)": { 
+            width: 'auto',
+        }
     },
     subtitle: {
         display: 'flex',
@@ -78,6 +84,7 @@ export const homeStyles = makeStyles((theme) => ({
         boxShadow: '0 0 10px 0 rgba(0,0,0,0.2)',
         borderRadius: '50%',
         height: '2em',
+        cursor: 'pointer',
         width: '2em',
         '&hover': {
             animation: 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both',
@@ -86,12 +93,12 @@ export const homeStyles = makeStyles((theme) => ({
         }
     }
     ,
-    '@media (max-width: 600px)': {
+    '@media (max-width: 768px)': {
         phoneImage: {
             display: 'none',
         },
         subtitle: {
-            width: '80%',
+            width: '100%',
         },
         title:{
             height: 'auto',
@@ -103,7 +110,8 @@ export const homeStyles = makeStyles((theme) => ({
             alignItems: 'center',
         },
         icons:{
-            right: '1em',
+            right: '0.5em',
+            cursor: 'pointer',
         }
     }
 }));
@@ -123,7 +131,7 @@ export const BGImage = styled('img')({
         left: 'auto',
     },
     '@media (max-width:468px)':{
-        height: '40em'
+        height: '90%'
     }
 
 });

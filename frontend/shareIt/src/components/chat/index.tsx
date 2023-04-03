@@ -18,11 +18,11 @@ interface IChatProps {
 const Chat = (props: IChatProps) => {
     const chatProps = useMultiChatLogic(
         'a8cffafe-4a1d-4d70-ad2a-84ceb9752962',
-        props.form.data.username,
-        props.form.data.secret,
+        props.form.username,
+        props.form.secret,
     )
     const classes = chatStyles();
-    // const { form } = useAppContext() as IContextInterface;
+    const { form } = useAppContext() as IContextInterface;
     console.log('form', props.form )
   return (
     <Box className={classes.chatContainer}>

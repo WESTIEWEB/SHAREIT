@@ -9,6 +9,7 @@ body {
   height: 100vh;
   justify-content: center;
   place-items: center;
+  font-size: 1em;
   min-width: 320px;
   background-color: #f3ecec;
   min-height: 100vh;

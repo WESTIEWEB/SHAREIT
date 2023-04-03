@@ -12,7 +12,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(true);
 
-    const { loginConfig, authUser } = useAppContext() as IContextInterface;
+    const { loginConfig, authUser, setChatSecr } = useAppContext() as IContextInterface;
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -33,6 +33,7 @@ const LoginPage = () => {
     //A function that handle login form submission
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setChatSecr(password);
         loginConfig({email: email, password: password});
     }
     const classes = loginStyles();
@@ -52,7 +53,7 @@ const LoginPage = () => {
                         <Button disabled={isDisabled} type='submit' style={{ cursor: isDisabled? 'not-allowed': 'pointer'}} className={`${classes.buttn}`} variant='contained' color='primary'>Login</Button>
                         <Typography className={classes.inputLabel} variant='h6'>
                             Not yet a user? click {' '}
-                            <Link to={'/register'}>
+                            <Link to={'/signup'}>
                                 here
                             </Link>
                             {' '}

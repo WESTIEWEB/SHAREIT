@@ -10,7 +10,7 @@ const AuthForm = () => {
   const classes = useStyles();
   const [value, setValue] = useState<string>('');
   const [username, setUsername] = useState<string>('');
-  const { authUser, setUser, user } = useAppContext() as IContextInterface;
+  const { authUser, setUser, user, chatSecr, getUserProfile, userEmail, form } = useAppContext() as IContextInterface;
 
   //get user from local storage
   useEffect(() => {
@@ -20,24 +20,31 @@ const AuthForm = () => {
     }
   }, [])
 
+  //get user profile
+  useEffect(() => {
+    if(username) {
+      getUserProfile();
+    }
+    console.log('useremail....',userEmail, username)
+  }, [username])
+
+
   //form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setUser({ username: value })
+    setUser({ email: userEmail })
     if(!username) {
       authUser({ username: value, secret: value });
     }
-    authUser({username, secret: username});
+    authUser({username: value, secret: username});
     setUser({} as IUserInterface);
   }
-  console.log("user", user)
 
   //handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setValue(value);
   }
-  console.log("value", value)
 
   //use effect to set input value to null
   useEffect(() => {

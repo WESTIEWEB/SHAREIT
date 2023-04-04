@@ -6,6 +6,7 @@ import { UserInstance } from "../model/user";
 export const authUser = async (req: JwtPayload, res: Response, next: NextFunction) => {
     try{
         const token = req.headers.authorization?.split(' ')[1];
+        console.log(token)
         if(!token){
             return res.status(400).json({
                 message: 'user not signed in'
@@ -18,7 +19,8 @@ export const authUser = async (req: JwtPayload, res: Response, next: NextFunctio
                 message: 'user not authorized, please sign in'
             })
         }
-        const { id } = decoded.id;
+        const id  = decoded._id;
+        console.log('id...',id)
 
         //verify if user with id exist
         const isUser = await UserInstance.findById(id);

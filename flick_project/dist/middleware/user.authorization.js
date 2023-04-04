@@ -11,6 +11,7 @@ const authUser = async (req, res, next) => {
     var _a;
     try {
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+        console.log(token);
         if (!token) {
             return res.status(400).json({
                 message: 'user not signed in'
@@ -22,7 +23,8 @@ const authUser = async (req, res, next) => {
                 message: 'user not authorized, please sign in'
             });
         }
-        const { id } = decoded.id;
+        const id = decoded._id;
+        console.log('id...', id);
         //verify if user with id exist
         const isUser = await user_1.UserInstance.findById(id);
         if (!isUser) {

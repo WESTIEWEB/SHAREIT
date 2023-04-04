@@ -1,36 +1,27 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createChatUser = void 0;
-const axios_1 = __importDefault(require("axios"));
-const createChatUser = async (req, res) => {
-    const { username } = req.body;
-    try {
-        // const isUser = await UserInstance.findOne({email: email.trim().toLowerCase()})
-        // if(!isUser) {
-        //     return res.status(400).json({
-        //         message: 'User not found, please register first'
-        //     })
-        // }
-        const resp = await axios_1.default.post(`${process.env.CHAT_ENGINE_URL}/users/`, {
-            username: username,
-            secret: username
-        }, {
-            headers: {
-                "PRIVATE-KEY": process.env.CHAT_ENGINE_KEY
-            }
-        });
-        console.log(resp.data);
-    }
-    catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: 'Internal server error',
-            error: error.message
-        });
-    }
+const index_1 = require("../index");
+const io = require('socket.io')(index_1.server);
+const socketConnected = new Set();
+const onConnected = (socket) => {
+    console.log('socket connected', socket.id);
+    socketConnected.add(socket.id);
+    console.log('socketConnected', socketConnected);
+    io.emit('connected clients', socketConnected.size);
+    socket.on('disconnect', () => {
+        console.log('socket disconnected', socket.id);
+        socketConnected.delete(socket.id);
+        console.log('socketConnected', socketConnected);
+        io.emit('connected clients', socketConnected.size);
+    });
+    socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+        socket.broadcast.emit('chat message', msg);
+    });
+    socket.on('typing', (data) => {
+        socket.broadcast.emit('typing', data);
+    });
 };
-exports.createChatUser = createChatUser;
+io.on('connection', onConnected);
+exports.default = io;
 //# sourceMappingURL=index.js.map

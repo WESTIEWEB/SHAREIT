@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { LoginUser, registerUser } from '../services/user.service';
+import { LoginUser, registerUser, getUserProfile } from '../services/user.service';
 import { registerSchema, options, loginSchema } from '../utils/validation';
+import { JwtPayload } from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try{
@@ -50,6 +51,25 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             Error: err.message,
             message: 'Internal server error',
             route: 'users/login'
+        })
+    }
+}
+
+export const getUserProfileController = async (req: JwtPayload, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user._id;
+        const user = await getUserProfile(userId);
+        return res.status(200).json({
+            status: 'success',
+            message: 'User profile',
+            data: user
+        });
+        
+    } catch (error: any) {
+        res.status(error.statusCode || 500).json({
+            message: 'Internal server error',
+            Error: error.message,
+            route: 'user/profile'
         })
     }
 }

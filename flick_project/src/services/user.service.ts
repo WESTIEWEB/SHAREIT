@@ -47,20 +47,20 @@ export const registerUser = async (input: CreateUserDto) => {
     const token =jwt.sign({id: user._id, email: user.email}, JWT_SECRET, {expiresIn: '1d'}) as unknown as JwtPayload;
 
     // function to create a chat user
-    const chatResposne = await axios.put(`${CHAT_ENGINE_URL}/users/`, 
-        {
-            username: username,
-            secret: password,
-        },
-        {
-            headers: {
-            "Private-Key": PRIVATE_KEY
-            }
-        });
+    // const chatResposne = await axios.put(`${CHAT_ENGINE_URL}/users/`, 
+    //     {
+    //         username: username,
+    //         secret: password,
+    //     },
+    //     {
+    //         headers: {
+    //         "Private-Key": PRIVATE_KEY
+    //         }
+    //     });
     return {
         token,
         ...userObj,
-        chatAccount:{...chatResposne.data}
+        // chatAccount:{...chatResposne.data}
     }
     
 }
@@ -96,19 +96,34 @@ export const LoginUser = async (input: UserLoginDto) => {
 
     // get chat user
 
-    const chatResposne = await axios.get(`${CHAT_ENGINE_URL}/users/me/`,
-        {
-            headers: {
-            "Project-ID": PROJECT_ID,
-            "User-Name": user.username,
-            "User-Secret": password
-            }
-        });
+    // const chatResposne = await axios.get(`${CHAT_ENGINE_URL}/users/me/`,
+    //     {
+    //         headers: {
+    //         "Project-ID": PROJECT_ID,
+    //         "User-Name": user.username,
+    //         "User-Secret": password
+    //         }
+    //     });
 
     // return user object
     return {
         token,
         ...userObj,
-        chatAcct: chatResposne.data
+        // chatAcct: chatResposne.data
     }
+}
+
+// Get logged in userProfile
+
+export const getUserProfile = async (id: string) => {
+    const isUser = await UserInstance.findById(id);
+    if(!isUser){
+        throw new Error('User not found')
+    }
+    const userObj = isUser.toObject();
+    delete userObj.password;
+    delete userObj.salt;
+    return {
+        ...userObj
+    };
 }

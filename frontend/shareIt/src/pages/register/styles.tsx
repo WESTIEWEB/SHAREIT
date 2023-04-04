@@ -62,7 +62,8 @@ export const RegForm = styled("form")({
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  height: "100%",
+  height: "100% !important",
+  flexWrap: "wrap",
   width: "50%",
   backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.9))',
 //   backgroundColor: "white",
@@ -78,7 +79,7 @@ export const RegForm = styled("form")({
 
 export const FormInput = styled("input")({
   // width: '70%',
-  height: "3em",
+  height: "2.5em",
   border: "none",
   borderRadius: "5px",
   outline: "none",
@@ -99,7 +100,7 @@ export const RegLabel = styled("label")({
   // width: '25%',
 //   height: "3em",
   textAlign: "left",
-  margin: "1em 0 0 0",
+  margin: "0.5em 0 0 0",
   fontSize: "1em",
   padding: "0 0 0.5em 0",
   "@media (max-width: 768px)": {

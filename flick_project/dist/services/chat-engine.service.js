@@ -19,6 +19,17 @@ const createChatUser = async (data) => {
             "private-key": config_1.PRIVATE_KEY
         }
     });
+    // const chatUser = await axios.get(`${CHAT_ENGINE_URL}/users/${username}`,  {
+    //     headers: {
+    //         "Project-ID": PROJECT_ID,
+    //         "User-Name": username,
+    //         "User-Secret": username,
+    //         }
+    // });
+    // if(!chatUser){
+    //     throw new Error('Chat user not found');
+    // }
+    // return chatUser.data;
     return res.data;
 };
 exports.createChatUser = createChatUser;

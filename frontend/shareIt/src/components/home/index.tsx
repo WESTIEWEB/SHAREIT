@@ -20,15 +20,22 @@ const Home = () => {
 
     const GreetUser = () => {
         if(!isAuth) {
-            return <Button className={classes.button} variant='contained' color='primary'>
+            return (
+                <Link style={{textDecoration:'none'}} to='/login'>
+                    <Button className={classes.button} variant='contained' color='primary'>
                         Get Started
                     </Button>
+                </Link>
+            )
         } 
         else {
             return (
-                <Button className={classes.button} variant='contained' color='primary'>
-                    Hi {localStorage.getItem('username')}😎
-                </Button>
+                <Link style={{textDecoration:'none'}} to={''}>
+                    <Button className={classes.button} variant='contained' color='primary'>
+                        Hi {localStorage.getItem('username')}😎
+                    </Button>
+                </Link>
+                
             )
         }
     }
@@ -46,9 +53,7 @@ const Home = () => {
                         One secure platform to pay, get paid, and manage all your <br/> finances better!
                     </Typography>
                     <Box className={classes.buttonDiv}>
-                        <Link style={{textDecoration:'none'}} to={`${isAuth && '#'} /login`}>
-                            <GreetUser />
-                        </Link>
+                        <GreetUser />
                     </Box>
                 </Box>
                 <Box className={classes.phoneImage}>

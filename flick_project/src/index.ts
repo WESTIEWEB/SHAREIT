@@ -2,6 +2,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import logger from 'morgan';
+import path from 'path';
 import { dbConnection } from './database';
 import userRoute from './routes/users-route';
 import chatEngineRoute from './routes/chat-engine.route';
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 app.use('/users', userRoute);
 app.use('/chat-engine', chatEngineRoute);
@@ -29,7 +31,7 @@ app.use('/', (req, res) => {
 })
 
 const port = process.env.port || 3000 
-app.listen(port, ()=> {
+export const server = app.listen(port, ()=> {
     console.log(`server is listening on: ${port}`)
 })
 export default app;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = void 0;
+exports.getUserProfileController = exports.login = exports.register = void 0;
 const user_service_1 = require("../services/user.service");
 const validation_1 = require("../utils/validation");
 const register = async (req, res, next) => {
@@ -56,4 +56,23 @@ const login = async (req, res, next) => {
     }
 };
 exports.login = login;
+const getUserProfileController = async (req, res, next) => {
+    try {
+        const userId = req.user._id;
+        const user = await (0, user_service_1.getUserProfile)(userId);
+        return res.status(200).json({
+            status: 'success',
+            message: 'User profile',
+            data: user
+        });
+    }
+    catch (error) {
+        res.status(error.statusCode || 500).json({
+            message: 'Internal server error',
+            Error: error.message,
+            route: 'user/profile'
+        });
+    }
+};
+exports.getUserProfileController = getUserProfileController;
 //# sourceMappingURL=user.controller.js.map

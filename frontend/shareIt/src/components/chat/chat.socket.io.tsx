@@ -1,122 +1,207 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import io from 'socket.io-client';
+import React, { useState, useEffect, useRef } from "react";
+import io from "socket.io-client";
+import moment from "moment";
+import Box from '@material-ui/core/Box'
+import { chatStyles, MessageBox, MessageForm, MessageInput } from "./styles";
+import { GrSend } from 'react-icons/gr';
+import { BsPersonBadgeFill } from 'react-icons/bs'
+import { VscCloseAll } from 'react-icons/vsc';
+import Button from '@material-ui/core/Button';
+import logo from '@/assets/logo2.svg';
+import { useAppContext } from "@/context";
+import { IContextInterface } from "@/interface";
+// import "./style.css";
+const socketOptions = {
+  path: '/socket.io',
+  transports: ['websocket'],
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+};
 
-const socket = io();
+const socket = io('http://localhost:3600',socketOptions);
 
-function Chat() {
+interface Message {
+  name: string;
+  message: string;
+  dateTime: Date;
+}
+interface Props {
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
+interface IProps {
+  handleChatClick: () => void;
+}
+export default function Chat() {
   const [clientsTotal, setClientsTotal] = useState(0);
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
+  const [name, setName] = useState("anonymous");
+  const [message, setMessage] = useState("");
+  
+  //get state from contextApi
+  const { handleChatModal } = useAppContext() as unknown as IContextInterface;
+  //get username from local storage
+  const user = localStorage.getItem('username');
+  const classes = chatStyles();
+  const messageContainer = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    socket.on('clients-total', (data) => {
+    socket.on("clients-total", (data) => {
       setClientsTotal(data);
     });
 
-    socket.on('chat-message', (data) => {
-      setMessages((prevMessages: any) => [...prevMessages, { ...data, isOwnMessage: false }]);
-      const messageTone = new Audio('@/assets/mp3/message-tone.mp3');
-      messageTone.play();
-    });
+    socket.on("chat-message", (data) => addMessageToUI(false, data));
 
-    socket.on('feedback', (data) => {
-      setMessages((prevMessages: any) => [...prevMessages, { feedback: data.feedback }]);
+    socket.on("feedback", (data) => {
+      clearFeedback();
+      const element = (
+        <li className="message-feedback">
+          <p className="feedback" id="feedback">
+            {data.feedback}
+          </p>
+        </li>
+      );
+      setMessages((prevMessages) => [...prevMessages, element]);
     });
 
     return () => {
-      socket.off('clients-total');
-      socket.off('chat-message');
-      socket.off('feedback');
+      socket.disconnect();
     };
   }, []);
 
-  function handleSubmit(e:any) {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  function sendMessage(e:any) {
     e.preventDefault();
-    if (message === '') return;
+    if (message === "") return;
+
     const data = {
       name,
       message,
       dateTime: new Date(),
     };
-    socket.emit('message', data);
-    setMessages((prevMessages: any) => [...prevMessages, { ...data, isOwnMessage: true }]);
-    setMessage('');
+    socket.emit("message", data);
+    addMessageToUI(true, data);
+    setMessage("");
   }
 
-  function handleNameChange(e:any) {
+  function handleInputChange(e:any) {
     setName(e.target.value);
   }
 
-  function handleMessageChange(e:any) {
+  function handleTextareaChange(e:any) {
     setMessage(e.target.value);
-    socket.emit('feedback', { feedback: `✍️ ${name} is typing a message` });
+    socket.emit("feedback", {
+      feedback: `✍️ ${name} is typing a message`,
+    });
+  }
+
+  function addMessageToUI(isOwnMessage: boolean, data: any) {
+    clearFeedback();
+    const element = (
+      <li className={isOwnMessage ? "message-right" : "message-left"}>
+        <p className="message">
+          {data.message}
+          <span className="message-span">
+            {data.name} ●  
+            {moment(data.dateTime).fromNow()}
+          </span>
+        </p>
+      </li>
+    );
+    setMessages((prevMessages) => [...prevMessages, element]);
   }
 
   function clearFeedback() {
-    setMessages((prevMessages: any) => prevMessages.filter((msg:any) => !msg.feedback));
+    setMessages((prevMessages) =>
+      prevMessages.filter((message) => !message.props.className.includes("message-feedback"))
+    );
   }
 
   function scrollToBottom() {
-    const messageContainer = document.getElementById('message-container');
-    if(messageContainer) messageContainer.scrollTo(0, messageContainer.scrollHeight);
+    if(!messageContainer.current) return;
+    messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
   }
 
-  useEffect(scrollToBottom, [messages]);
+  const User = () => {
+    if(!user) {
+      setName('anonymous')
+      return (
+        <input
+            type="text"
+            id="name-input"
+            className={classes.nameInput}
+            value={name}
+            disabled
+            maxLength={20}
+            onChange={handleInputChange}
+          />
+      )
+    }
+    else {
+      setName(user)
+      return (
+        <input
+            type="text"
+            id="name-input"
+            className={classes.nameInput}
+            value={name}
+            maxLength={20}
+            disabled
+            onChange={handleInputChange}
+          />
+      )
+    }
+
+  }
 
   return (
-    <>
-        <h1 className="title">iChat 💬</h1>
-        <div className="main">
-          <div className="name">
-            <span><i className="far fa-user"></i></span>
-            <input
-              type="text"
-              id="name-input"
-              className="name-input"
-              value="anonymous"
-              onChange={handleNameChange}
-            />
-          </div>
+    <Box className={classes.app}>
+      <h1 className={classes.chatTitle}><img src={logo} alt="logo"/> <span>💬</span></h1>
+      <span className={classes.closeChat} > <VscCloseAll onClick={handleChatModal}/></span>
+      <Box className={classes.main}>
+        <Box className={classes.name}>
+          <span>
+            <BsPersonBadgeFill />
+          </span>
+          {/* <input
+            type="text"
+            id="name-input"
+            className="name-input"
+            value={name}
+            maxLength={20}
+            onChange={handleInputChange}
+          /> */}
+          <User />
+        </Box>
 
-          <ul className="message-container" id="message-container">
-            {/* These li elements are only for reference, and therefore, they are commented out... */}
-            {/* <li className="message-left">
-              <p className="message">
-                lorem impsun
-                <span>bluebird ● 26 July 10:40</span>
-              </p>
-            </li>
-            <li className="message-right">
-              <p className="message">
-                lorem impsun
-                <span>bluebird ● 26 July 10:40</span>
-              </p>
-            </li>
-            <li className="message-feedback">
-              <p className="feedback" id="feedback">✍️ killer is typing a message...</p>
-            </li> */}
-          </ul>
+        <MessageBox ref={messageContainer}>
+          {messages.map((message:any, index) => (
+            <React.Fragment key={index}>{message}</React.Fragment>
+          ))}
+        </MessageBox>
 
-          <form onSubmit={handleSubmit} className="message-form" id="message-form">
-            <input
-              onChange={handleMessageChange}
-              type="text"
-              name="message"
-              id="message-input"
-              className="message-input"
-            />
-            <div className="v-divider"></div>
-            <button type="submit" className="send-button">
-              send <span><i className="fas fa-paper-plane"></i></span>
-            </button>
-          </form>
-        </div>
-        <h3 className="clients-total" id="client-total">Total clients: 2</h3>
-    
-    </>
+        <MessageForm onSubmit={sendMessage}>
+          <MessageInput
+            type="text"
+            name="message"
+            id="message-input"
+            value={message}
+            onChange={handleTextareaChange}
+          />
+          <Box className={classes.Vboxider}></Box>
+          <Button type="submit" className={classes.sendButton}>
+            <GrSend />
+          </Button>
+        </MessageForm>
+      </Box>
+      <h3 className="clients-total" id="client-total">
+        {/* Total clients: {clientsTotal} */}
+      </h3>
+    </Box>
   );
 }
-
-export default Chat;

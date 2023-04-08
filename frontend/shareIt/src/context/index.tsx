@@ -3,6 +3,10 @@ import { apiGet, apiPost } from '../utils';
 import { IFormInterface, IUserInterface } from '../interface';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Buffer } from 'safe-buffer';
+
+
 
 interface IAppContext {
     children: React.ReactNode;
@@ -17,6 +21,9 @@ const AppProvider = ({ children }: IAppContext) => {
     const [user, setUser] = useState<IUserInterface>({} as IUserInterface);
     //set form state
     const [form, setForm] = useState<Record<string, any>>({});
+
+    //state for showChat modal
+    const [showChat, setShowChat] = useState<boolean>(false);
 
     //set chat secret
     const [chatSecr, setChatSecr] = useState<undefined | unknown>('');
@@ -101,6 +108,33 @@ const AppProvider = ({ children }: IAppContext) => {
             console.log(err);
         }
     }
+
+    //========================== Function showModal ==========================
+    const handleChatModal = () => {
+        setShowChat(!showChat)
+    }
+
+    //========================== Function that verifies Token ==========================
+    // const verifyToken = async() => {
+    //     //get token from local storage
+    //     const token = localStorage.getItem('token');
+    //     if(!token) return null;
+    
+    //     //if token exists, verify it
+    //     const verify = jwt.verify(token, import.meta.env.VITE_APP_SECRET) as JwtPayload;
+    //     if (verify) {
+    //         const expiry : number | undefined = verify.exp;
+    //         if(!expiry) return null;
+    
+    //         const now = new Date().getTime() / 1000;
+    
+    //         //if token is expired, remove it from local storage
+    //         if (now > expiry) {
+    //             localStorage.removeItem('token');
+    //             return null;
+    //         }
+    //     }
+    // }
   return (
     <AppContext.Provider value={{
         authUser,
@@ -114,7 +148,10 @@ const AppProvider = ({ children }: IAppContext) => {
         userName,
         userEmail,
         getUserProfile,
-        registerConfig
+        registerConfig,
+        handleChatModal,
+        showChat,
+        // verifyToken
     }}>
         {children}
     </AppContext.Provider>

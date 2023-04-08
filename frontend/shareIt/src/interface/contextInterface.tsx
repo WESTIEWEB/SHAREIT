@@ -16,4 +16,7 @@ export interface IContextInterface {
     setChatSecr: React.Dispatch<React.SetStateAction<{}>>;
     getUserProfile: () => void;
     registerConfig: (registerObj: IFormInterface) => void;
+    handleChatModal: () => void;
+    showChat: boolean;
+    // verifyToken: () => void;
 }

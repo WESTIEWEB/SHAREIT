@@ -7,17 +7,26 @@ import { Button, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { BsChatRightText } from 'react-icons/bs';
 import ChatModal from '../../pages/chatModal';
+import { useAppContext } from '@/context';
+import { IContextInterface } from '@/interface';
 
 const Home = () => {
-    const [showChat, setShowChat] = React.useState(false);
+    // const [showChat, setShowChat] = React.useState(false);
+
+    // context props
+    const { handleChatModal, showChat } = useAppContext() as IContextInterface;
     const classes = homeStyles();
     console.log('showChat', showChat)
-    const handleChatClick = () => {
-        setShowChat(!showChat);
+    const handleChatClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        handleChatModal()
     }
 
-    const isAuth = localStorage.getItem('token');
+    // call verifytoken when component mounts
+    React.useEffect(() => {
+        // verifyToken();
+    }, [])
 
+    const isAuth = localStorage.getItem('token');
     const GreetUser = () => {
         if(!isAuth) {
             return (
@@ -68,7 +77,7 @@ const Home = () => {
             </Button>
           </ChatIcon>
         </Box>
-        {showChat && <ChatModal />}
+        {showChat && <ChatModal/>}
     </>
   )
 }

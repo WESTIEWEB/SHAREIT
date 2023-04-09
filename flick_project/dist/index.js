@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.io = void 0;
+exports.io = exports.server = void 0;
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
@@ -34,8 +34,8 @@ app.use('/chat-engine', chat_engine_route_1.default);
 //     res.send('hello')
 // })
 const port = process.env.port || 3000;
-const server = http_1.default.createServer(app);
-server.listen(port, () => {
+exports.server = http_1.default.createServer(app);
+exports.server.listen(port, () => {
     console.log(`server is listening on: ${port}`);
 });
 const socketOptions = {
@@ -46,10 +46,10 @@ const socketOptions = {
         methods: ['GET', 'POST']
     }
 };
-exports.io = socketIo(server, socketOptions);
+exports.io = socketIo(exports.server, socketOptions);
 let socketsConnected = new Set();
-exports.io.on('connection', onConnected);
-function onConnected(socket) {
+// io.on('connection', onConnected);
+exports.io.on('connection', (socket) => {
     console.log('Socket connected', socket.id);
     socketsConnected.add(socket.id);
     exports.io.emit('clients-total', socketsConnected.size);
@@ -64,6 +64,22 @@ function onConnected(socket) {
     socket.on('feedback', (data) => {
         socket.broadcast.emit('feedback', data);
     });
-}
+});
+// function onConnected(socket:any) {
+//   console.log('Socket connected', socket.id);
+//   socketsConnected.add(socket.id);
+//   io.emit('clients-total', socketsConnected.size);
+//   socket.on('disconnect', () => {
+//     console.log('Socket disconnected', socket.id);
+//     socketsConnected.delete(socket.id);
+//     io.emit('clients-total', socketsConnected.size);
+//   });
+//   socket.on('message', (data:any) => {
+//     socket.broadcast.emit('chat-message', data);
+//   });
+//   socket.on('feedback', (data:any) => {
+//     socket.broadcast.emit('feedback', data);
+//   });
+// }
 exports.default = app;
 //# sourceMappingURL=index.js.map

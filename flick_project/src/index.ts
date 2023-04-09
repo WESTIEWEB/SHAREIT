@@ -32,7 +32,7 @@ app.use('/chat-engine', chatEngineRoute);
 // })
 
 const port = process.env.port || 3000 
-const server = http.createServer(app)
+export const server = http.createServer(app)
 server.listen(port, ()=> {
     console.log(`server is listening on: ${port}`)
 })
@@ -49,9 +49,8 @@ const socketOptions = {
 export const io = socketIo(server, socketOptions)
 let socketsConnected = new Set();
 
-io.on('connection', onConnected);
-
-function onConnected(socket:any) {
+// io.on('connection', onConnected);
+io.on('connection', (socket:any) =>{
   console.log('Socket connected', socket.id);
   socketsConnected.add(socket.id);
   io.emit('clients-total', socketsConnected.size);
@@ -69,6 +68,25 @@ function onConnected(socket:any) {
   socket.on('feedback', (data:any) => {
     socket.broadcast.emit('feedback', data);
   });
-}
+})
+// function onConnected(socket:any) {
+//   console.log('Socket connected', socket.id);
+//   socketsConnected.add(socket.id);
+//   io.emit('clients-total', socketsConnected.size);
+
+//   socket.on('disconnect', () => {
+//     console.log('Socket disconnected', socket.id);
+//     socketsConnected.delete(socket.id);
+//     io.emit('clients-total', socketsConnected.size);
+//   });
+
+//   socket.on('message', (data:any) => {
+//     socket.broadcast.emit('chat-message', data);
+//   });
+
+//   socket.on('feedback', (data:any) => {
+//     socket.broadcast.emit('feedback', data);
+//   });
+// }
 
 export default app;

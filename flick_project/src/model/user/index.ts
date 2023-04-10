@@ -1,6 +1,4 @@
-import { string } from "joi";
-import mongoose, { Schema, model } from "mongoose";
-import { v4 as uuidv4} from 'uuid';
+import { Schema, model } from "mongoose";
 
 export interface IUserInterface {
     toObject: any;

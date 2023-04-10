@@ -18,4 +18,5 @@ __exportStar(require("./user.dto"), exports);
 __exportStar(require("./create-user.dto"), exports);
 __exportStar(require("./user-login.dto"), exports);
 __exportStar(require("./create-chat-user.dto"), exports);
+__exportStar(require("./auth-user.dto"), exports);
 //# sourceMappingURL=index.js.map

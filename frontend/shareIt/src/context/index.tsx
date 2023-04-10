@@ -73,7 +73,7 @@ const AppProvider = ({ children }: IAppContext) => {
 
         }catch(err:any) {
             console.log(err);
-            toast.error(err.response.data.Error);
+            toast.error(err.response.data.error);
         }
     }
     // ========= REGISTER USER ==========
@@ -83,7 +83,7 @@ const AppProvider = ({ children }: IAppContext) => {
             
             if(res.data.status == 'success') {
                 console.log('data',res.data);
-                toast.success(res.data.message);
+                toast.success(res.data.error);
                 setTimeout(() => {
                     window.location.href = "/login";
                 }, 1000)
@@ -91,7 +91,7 @@ const AppProvider = ({ children }: IAppContext) => {
             return
             
         } catch (error: any) {
-            toast.error(error.response.data.Error);
+            toast.error(error.response.data.message);
             console.log(error);
         }
     }

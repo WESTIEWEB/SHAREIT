@@ -16,4 +16,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./users-route"), exports);
 __exportStar(require("./chat-engine.route"), exports);
+__exportStar(require("./admin-routes"), exports);
 //# sourceMappingURL=index.js.map

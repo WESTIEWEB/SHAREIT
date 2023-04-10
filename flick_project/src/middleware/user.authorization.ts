@@ -6,13 +6,14 @@ import { UserInstance } from "../model/user";
 export const authUser = async (req: JwtPayload, res: Response, next: NextFunction) => {
     try{
         const token = req.headers.authorization?.split(' ')[1];
-        console.log(token)
+        console.log('token...',token)
         if(!token){
             return res.status(400).json({
                 message: 'user not signed in'
             })
         }
         const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
 
         if(!decoded){
             return res.status(401).json({
@@ -23,9 +24,9 @@ export const authUser = async (req: JwtPayload, res: Response, next: NextFunctio
         console.log('id...',id)
 
         //verify if user with id exist
-        const isUser = await UserInstance.findById(id);
+        const user = await UserInstance.findById(id);
 
-        if(!isUser){
+        if(!user){
             return res.status(401).json({
                 message: 'Kindly register or sign in'
             })

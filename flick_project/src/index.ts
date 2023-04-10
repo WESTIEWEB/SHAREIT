@@ -5,8 +5,9 @@ import logger from 'morgan';
 import path from 'path';
 import http from 'http';
 import { dbConnection } from './database';
-import userRoute from './routes/users-route';
-import chatEngineRoute from './routes/chat-engine.route';
+import chatEngineRoute from './user/routes/chat-engine.route';
+import userRoute from './user/routes/users-route';
+import adminRoute from './admin/routes/admin-routes';
 
 const socketIo = require('socket.io');
 
@@ -27,15 +28,19 @@ app.use(express.static(path.resolve(__dirname, '../public')));
 
 app.use('/users', userRoute);
 app.use('/chat-engine', chatEngineRoute);
+app.use('/api/v1/admin', adminRoute);
 // app.use('/', (req, res) => {
 //     res.send('hello')
 // })
 
 const port = process.env.port || 3000 
+
 export const server = http.createServer(app)
 server.listen(port, ()=> {
     console.log(`server is listening on: ${port}`)
 })
+
+//setting up socket.io
 
 const socketOptions = {
   path: '/socket.io',

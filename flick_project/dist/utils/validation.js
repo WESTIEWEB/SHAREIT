@@ -9,13 +9,13 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.registerSchema = joi_1.default.object({
     username: joi_1.default.string().required(),
     email: joi_1.default.string().email().required(),
-    password: joi_1.default.string().min(6).pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    password: joi_1.default.string().min(6).pattern(new RegExp('^[a-zA-Z0-9-?!@#$%^&*,.\\s]{3,30}$')).required(),
     confirmPassword: joi_1.default.string().valid(joi_1.default.ref('password')).required().label('Confirm password').messages({ 'any.only': '{{#label}} does not match' }),
     phone: joi_1.default.string().max(10).required()
 });
 exports.loginSchema = joi_1.default.object({
     email: joi_1.default.string().email().required(),
-    password: joi_1.default.string().min(6).pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    password: joi_1.default.string().min(6).pattern(new RegExp('^[a-zA-Z0-9-?!@#$%^&*,.\\s]{3,30}$')).required(),
 });
 //chat-user schema
 exports.chatUserSchema = joi_1.default.object({

@@ -23,8 +23,8 @@ const register = async (req, res, next) => {
     }
     catch (err) {
         return res.status(err.statusCode || 500).json({
-            Error: err.message,
-            message: "Internal server error",
+            message: err.message,
+            error: "Internal server error",
             route: 'users/register'
         });
     }
@@ -49,8 +49,8 @@ const login = async (req, res, next) => {
     catch (err) {
         console.log(err);
         res.status(err.statusCode || 500).json({
-            Error: err.message,
-            message: 'Internal server error',
+            message: err.message,
+            error: 'Internal server error',
             route: 'users/login'
         });
     }
@@ -68,8 +68,8 @@ const getUserProfileController = async (req, res, next) => {
     }
     catch (error) {
         res.status(error.statusCode || 500).json({
-            message: 'Internal server error',
-            Error: error.message,
+            error: 'Internal server error',
+            message: error.message,
             route: 'user/profile'
         });
     }

@@ -1,27 +1,50 @@
-import mongoose, { Schema, Types, model } from "mongoose";
+import mongoose, { Schema, Types, model, ObjectId } from "mongoose";
 import { IUserInterface } from "../user";
 import { IAdminInterface } from "../admin";
 
 export interface IChat{
-    _id: Types.ObjectId;
-    roomID: string;
+    _id?: Types.ObjectId;
     message: string;
-    user: Types.ObjectId | IUserInterface;
-    admin: Types.ObjectId | IAdminInterface;
+    userId: Types.ObjectId | IUserInterface;
+    adminId: Types.ObjectId | IAdminInterface;
+    sender: string;
+    createdAt?: Date
 }
 
 const chatSchema = new Schema<IChat>({
-    roomID: {type: String, required: true},
-    message: {type: String, required: true},
-    user: {
+    message: {type: String, required: true, trim: true},
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    admin: {
+    adminId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Admin',
+    },
+    sender: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
     }
 
-})
+},
+{timestamps: true})
+
+chatSchema.virtual('user', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true,
+});
+
+chatSchema.virtual('admin', {
+    ref: 'Admin',
+    localField: 'adminId',
+    foreignField: '_id',
+    justOne: true,
+});
 
 export const ChatInstance = model<IChat>('Chat', chatSchema)

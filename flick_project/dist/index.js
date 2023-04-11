@@ -11,9 +11,9 @@ const morgan_1 = __importDefault(require("morgan"));
 const path_1 = __importDefault(require("path"));
 const http_1 = __importDefault(require("http"));
 const database_1 = require("./database");
-const chat_engine_route_1 = __importDefault(require("./user/routes/chat-engine.route"));
 const users_route_1 = __importDefault(require("./user/routes/users-route"));
 const admin_routes_1 = __importDefault(require("./admin/routes/admin-routes"));
+const chat_engine_route_1 = __importDefault(require("./chat/routes/chat-engine.route"));
 const socketIo = require('socket.io');
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -30,7 +30,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.static(path_1.default.resolve(__dirname, '../public')));
 app.use('/users', users_route_1.default);
-app.use('/chat-engine', chat_engine_route_1.default);
+app.use('/api/v1/chat-engine', chat_engine_route_1.default);
 app.use('/api/v1/admin', admin_routes_1.default);
 // app.use('/', (req, res) => {
 //     res.send('hello')

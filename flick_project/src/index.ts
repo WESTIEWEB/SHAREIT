@@ -5,9 +5,9 @@ import logger from 'morgan';
 import path from 'path';
 import http from 'http';
 import { dbConnection } from './database';
-import chatEngineRoute from './user/routes/chat-engine.route';
 import userRoute from './user/routes/users-route';
 import adminRoute from './admin/routes/admin-routes';
+import chatEngineRoute from './chat/routes/chat-engine.route';
 
 const socketIo = require('socket.io');
 
@@ -27,7 +27,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.resolve(__dirname, '../public')));
 
 app.use('/users', userRoute);
-app.use('/chat-engine', chatEngineRoute);
+app.use('/api/v1/chat-engine', chatEngineRoute);
 app.use('/api/v1/admin', adminRoute);
 // app.use('/', (req, res) => {
 //     res.send('hello')

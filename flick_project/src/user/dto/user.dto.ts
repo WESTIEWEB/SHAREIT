@@ -1,5 +1,5 @@
 export interface IuserDto {
-    id: string;
+    _id: string;
     email: string;
     phone: string;
     name: string;

@@ -1,0 +1,1 @@
+{"version":3,"file":"admin-routes.js","sourceRoot":"","sources":["../../../src/chat/routes/admin-routes.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,gDAAmF;AACnF,iDAA6C;AAE7C,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,IAAI,CAAC,qBAAqB,EAAE,wCAA0B,CAAC,CAAA;AAC9D,MAAM,CAAC,IAAI,CAAC,eAAe,EAAE,sBAAS,EAAE,mCAAqB,CAAC,CAAA;AAE9D,kBAAe,MAAM,CAAC"}

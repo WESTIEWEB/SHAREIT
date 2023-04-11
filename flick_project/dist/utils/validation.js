@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyPassword = exports.generateHash = exports.generateSalt = exports.options = exports.chatUserSchema = exports.loginSchema = exports.registerSchema = void 0;
+exports.verifyPassword = exports.generateHash = exports.generateSalt = exports.options = exports.newChatSchema = exports.chatUserSchema = exports.loginSchema = exports.registerSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.registerSchema = joi_1.default.object({
@@ -22,6 +22,14 @@ exports.chatUserSchema = joi_1.default.object({
     username: joi_1.default.string().required(),
     first_name: joi_1.default.string(),
     email: joi_1.default.string().email(),
+});
+// New chat schema
+exports.newChatSchema = joi_1.default.object({
+    roomID: joi_1.default.string(),
+    message: joi_1.default.string().required(),
+    userId: joi_1.default.string().required(),
+    adminId: joi_1.default.string().required(),
+    sender: joi_1.default.string().required(),
 });
 exports.options = {
     abortEarly: false,

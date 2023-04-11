@@ -38,7 +38,7 @@ export default function Chat() {
   const [clientsTotal, setClientsTotal] = useState(0);
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
   const [name, setName] = useState("anonymous");
-  const [message, setMessage] = useState("");
+  const [text, setText] = useState("");
   
   //get state from contextApi
   const { handleChatModal } = useAppContext() as unknown as IContextInterface;
@@ -75,18 +75,18 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  function sendMessage(e:any) {
+  function sendMessage(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (message === "") return;
+    if (text === "") return;
 
     const data = {
       name,
-      message,
+      message: text,
       dateTime: new Date(),
     };
     socket.emit("message", data);
     addMessageToUI(true, data);
-    setMessage("");
+    setText("");
   }
 
   function handleInputChange(e:any) {
@@ -94,13 +94,13 @@ export default function Chat() {
   }
 
   function handleTextareaChange(e:any) {
-    setMessage(e.target.value);
+    setText(e.target.value);
     socket.emit("feedback", {
       feedback: `✍️ ${name} is typing a message`,
     });
   }
 
-  function addMessageToUI(isOwnMessage: boolean, data: any) {
+  function addMessageToUI(isOwnMessage: boolean, data: Message) {
     clearFeedback();
     const element = (
       <li className={isOwnMessage ? "message-right" : "message-left"}>
@@ -190,7 +190,7 @@ export default function Chat() {
             type="text"
             name="message"
             id="message-input"
-            value={message}
+            value={text}
             onChange={handleTextareaChange}
           />
           <Box className={classes.Vboxider}></Box>

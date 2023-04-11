@@ -26,16 +26,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatInstance = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const chatSchema = new mongoose_1.Schema({
-    roomID: { type: String, required: true },
-    message: { type: String, required: true },
-    user: {
+    message: { type: String, required: true, trim: true },
+    userId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'User',
     },
-    admin: {
+    adminId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'Admin',
+    },
+    sender: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
     }
+}, { timestamps: true });
+chatSchema.virtual('user', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true,
+});
+chatSchema.virtual('admin', {
+    ref: 'Admin',
+    localField: 'adminId',
+    foreignField: '_id',
+    justOne: true,
 });
 exports.ChatInstance = (0, mongoose_1.model)('Chat', chatSchema);
 //# sourceMappingURL=index.js.map

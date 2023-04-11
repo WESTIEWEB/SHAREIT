@@ -20,7 +20,14 @@ export const chatUserSchema = Joi.object({
     first_name: Joi.string(),
     email: Joi.string().email(),
 })
-
+// New chat schema
+export const newChatSchema = Joi.object({
+    roomID: Joi.string(),
+    message: Joi.string().required(),
+    userId: Joi.string().required(),
+    adminId: Joi.string().required(),
+    sender: Joi.string().required(),
+})
 export const options = {
     abortEarly: false,
     allowUnknown: true,

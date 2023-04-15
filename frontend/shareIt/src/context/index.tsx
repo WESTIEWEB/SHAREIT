@@ -1,10 +1,11 @@
 import { useContext, createContext, useState , useEffect} from 'react';
-import { apiGet, apiPost } from '../utils';
+import { apiGet, apiPost, apiPostChat, baseUrl } from '../utils';
 import { IFormInterface, IUserInterface } from '../interface';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Buffer } from 'safe-buffer';
+import { IChat } from '@/interface/chatInterface';
 
 
 
@@ -54,13 +55,12 @@ const AppProvider = ({ children }: IAppContext) => {
     //Handle user login form submission
     const loginConfig = async (loginObj: IUserInterface) => {
         try{
-            await apiPost(import.meta.env.VITE_APP_BASEURL + '/users/login', loginObj)
+            await apiPost(baseUrl + '/users/login', loginObj)
             .then((res) => {
                 if(res.data.status == 'success') {
                     console.log('data',res.data);
                     toast.success(res.data.message);
-                    localStorage.setItem('token', res.data.data.token);
-                    localStorage.setItem('username', res.data.data.username);
+                    localStorage.setItem('userData', JSON.stringify(res.data.data));
 
                     //invoke authUser function
                     authUser({ username: res.data.data.username, secret: res.data.data.username });
@@ -73,13 +73,13 @@ const AppProvider = ({ children }: IAppContext) => {
 
         }catch(err:any) {
             console.log(err);
-            toast.error(err.response.data.error);
+            toast.error(err.response.data.message);
         }
     }
     // ========= REGISTER USER ==========
     const registerConfig = async (registerObj: IFormInterface) => {
         try {
-            const res = await apiPost(import.meta.env.VITE_APP_BASEURL + '/users/register', registerObj)
+            const res = await apiPost(baseUrl + '/users/register', registerObj)
             
             if(res.data.status == 'success') {
                 console.log('data',res.data);
@@ -98,7 +98,7 @@ const AppProvider = ({ children }: IAppContext) => {
     // ========== function to get user profile from db ==========
     const getUserProfile = async () => {
         try{
-            const response = await apiGet(import.meta.env.VITE_APP_BASEURL + '/users/user/profile')
+            const response = await apiGet(baseUrl + '/users/user/profile')
             if(response.status === 200) {
                 console.log(response.data);
                 setUserEmail(response.data.data.email)
@@ -112,6 +112,21 @@ const AppProvider = ({ children }: IAppContext) => {
     //========================== Function showModal ==========================
     const handleChatModal = () => {
         setShowChat(!showChat)
+    }
+
+    //========================== Function that handles creating new chat ==========================
+    const createNewChatConfig = async(file: IChat) => {
+        const engineURL = '/chat-engine/create-new-chat'
+        try {  
+            const response = await apiPostChat(baseUrl + `${engineURL}`, file)
+            if(response.status === 200) {
+                console.log(response.data);
+                setChatSecr(response.data.data);
+                console.log('chatSecr', chatSecr);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     //========================== Function that verifies Token ==========================
@@ -151,6 +166,8 @@ const AppProvider = ({ children }: IAppContext) => {
         registerConfig,
         handleChatModal,
         showChat,
+        createNewChatConfig
+        
         // verifyToken
     }}>
         {children}

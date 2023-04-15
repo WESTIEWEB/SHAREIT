@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createAdmin = exports.creatSuperAdmin = void 0;
-const common_1 = require("../../common");
 const config_1 = require("../../config");
 const admin_1 = require("../../model/admin");
 const utils_1 = require("../../utils");
@@ -15,7 +14,7 @@ const creatSuperAdmin = async (data) => {
     //trim email
     const trimedEmail = email.trim().toLowerCase();
     //call the function that checks if the email or phone number is already in use
-    await (0, common_1.checkEmailPhone)(trimedEmail, phone);
+    await (0, utils_1.checkEmailPhone)(trimedEmail, phone);
     //generate salt and hash password
     const salt = await (0, utils_1.generateSalt)();
     const newpassword = await (0, utils_1.generateHash)(password, salt);
@@ -53,7 +52,7 @@ const createAdmin = async (payload, data) => {
     //trim email
     const trimedEmail = email.trim().toLowerCase();
     //call the function that checks if the email or phone number is already in use
-    await (0, common_1.checkEmailPhone)(trimedEmail, phone);
+    await (0, utils_1.checkEmailPhone)(trimedEmail, phone);
     //generate salt and hash password
     const salt = await (0, utils_1.generateSalt)();
     const newpassword = await (0, utils_1.generateHash)(password, salt);

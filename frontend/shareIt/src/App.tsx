@@ -7,7 +7,9 @@ import LoginPage from '@/pages/login'
 import Home from '@/components/home'
 import { ToastContainer } from 'react-toastify';
 import Register from './pages/register'
-import Chat from './components/chat/chat.socket.io'
+import Chat from '@/components/chat/chat.socket.io'
+import path from 'path';
+import AdminChat from '@/components/chat/adminSupport'
 
 function App() {
 
@@ -22,6 +24,7 @@ function App() {
           <Route path='/chat-apk' element={<ChatModal />} />
           <Route path='/' element={<Home />} />
           <Route path='chat' element={<Chat />} />
+          <Route path='/admin-chat' element={<AdminChat />} />
         </Routes>
       </Router>
     </>

@@ -24,7 +24,7 @@ const getMessages = async (data) => {
     const allMessages = messages.map((item) => ({
         owner: item.userId.toString() === item.sender,
         message: item.message,
-        time: item.createdAt
+        dateTime: item.createdAt
     }));
     return allMessages;
 };

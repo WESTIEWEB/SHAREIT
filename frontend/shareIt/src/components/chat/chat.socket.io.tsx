@@ -10,14 +10,14 @@ import Button from '@material-ui/core/Button';
 import logo from '@/assets/logo2.svg';
 import { useAppContext } from "@/context";
 import { IContextInterface } from "@/interface";
-// import "./style.css";
 const socketOptions = {
   path: '/socket.io',
   transports: ['websocket'],
   cors: {
     origin: '*',
     methods: ['GET', 'POST']
-  }
+  },
+  credentials: true
 };
 
 const socket = io('http://localhost:3600',socketOptions);
@@ -36,12 +36,13 @@ interface IProps {
 }
 export default function Chat() {
   const [clientsTotal, setClientsTotal] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState<Array<Record<string,any>>>([]);
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
   const [name, setName] = useState("anonymous");
   const [text, setText] = useState("");
   
   //get state from contextApi
-  const { handleChatModal } = useAppContext() as unknown as IContextInterface;
+  const { handleChatModal, createNewChatConfig } = useAppContext() as unknown as IContextInterface;
   //get username from local storage
   const user = localStorage.getItem('username');
   const classes = chatStyles();
@@ -53,6 +54,7 @@ export default function Chat() {
     });
 
     socket.on("chat-message", (data) => addMessageToUI(false, data));
+
 
     socket.on("feedback", (data) => {
       clearFeedback();
@@ -84,6 +86,7 @@ export default function Chat() {
       message: text,
       dateTime: new Date(),
     };
+
     socket.emit("message", data);
     addMessageToUI(true, data);
     setText("");

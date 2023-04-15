@@ -5,10 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserProfile = exports.LoginUser = exports.registerUser = void 0;
 const user_1 = require("../../model/user");
-const validation_1 = require("../../utils/validation");
+const utils_1 = require("../../utils");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../../config");
-const common_1 = require("../../common");
 const admin_1 = require("../../model/admin");
 // ===== user registration services ===== //
 const registerUser = async (input) => {
@@ -16,9 +15,9 @@ const registerUser = async (input) => {
     //trim email
     const trimedEmail = email.trim().toLowerCase();
     //call the function that checks if the email or phone number is already in use
-    await (0, common_1.checkEmailPhone)(trimedEmail, phone);
-    const salt = await (0, validation_1.generateSalt)();
-    const newpassword = await (0, validation_1.generateHash)(password, salt);
+    await (0, utils_1.checkEmailPhone)(trimedEmail, phone);
+    const salt = await (0, utils_1.generateSalt)();
+    const newpassword = await (0, utils_1.generateHash)(password, salt);
     const user = await user_1.UserInstance.create({
         username,
         phone,
@@ -47,7 +46,7 @@ const LoginUser = async (input) => {
     const user = await user_1.UserInstance.findOne({ email: trimedEmail });
     const admin = await admin_1.AdminInstance.findOne({ email: trimedEmail });
     if (user) {
-        const verify = await (0, validation_1.verifyPassword)(password, user.password, user.salt);
+        const verify = await (0, utils_1.verifyPassword)(password, user.password, user.salt);
         if (!verify) {
             throw new Error('Invalid email or password');
         }
@@ -63,7 +62,7 @@ const LoginUser = async (input) => {
         };
     }
     else if (admin) {
-        const verify = await (0, validation_1.verifyPassword)(password, admin.password, admin.salt);
+        const verify = await (0, utils_1.verifyPassword)(password, admin.password, admin.salt);
         if (!verify) {
             throw new Error('Invalid email or password');
         }

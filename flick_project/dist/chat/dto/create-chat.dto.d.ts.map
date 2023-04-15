@@ -1,0 +1,1 @@
+{"version":3,"file":"create-chat.dto.d.ts","sourceRoot":"","sources":["../../../src/chat/dto/create-chat.dto.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,UAAU,CAAC;AAEjC,MAAM,WAAW,aAAa;IAC1B,MAAM,EAAE,KAAK,CAAC,QAAQ,CAAC;IACvB,OAAO,EAAE,KAAK,CAAC,QAAQ,CAAC;IACxB,OAAO,EAAE,MAAM,CAAC;IAChB,MAAM,EAAE,MAAM,CAAC;IACf,SAAS,CAAC,EAAE,IAAI,CAAC;CACpB"}

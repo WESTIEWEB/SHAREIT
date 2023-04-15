@@ -41,6 +41,12 @@ const login = async (req, res, next) => {
         }
         const user = await (0, user_service_1.LoginUser)(req.body);
         console.log("user", user);
+        if (!user) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid email or password',
+            });
+        }
         return res.status(201).json({
             status: 'success',
             message: 'Login successfully',

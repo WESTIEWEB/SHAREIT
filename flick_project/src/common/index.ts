@@ -1,1 +1,1 @@
-export * from './check-email-phone.common';
+export * from './user-type.common'

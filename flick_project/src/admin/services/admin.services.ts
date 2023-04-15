@@ -1,8 +1,7 @@
-import { checkEmailPhone } from "../../common";
 import { JWT_SECRET } from "../../config";
 import {  AuthAminDto } from "../dto";
 import { AdminInstance } from "../../model/admin";
-import { generateHash, generateSalt } from "../../utils";
+import { generateHash, generateSalt, checkEmailPhone } from "../../utils";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { CreateAdminDto } from "../dto";
 

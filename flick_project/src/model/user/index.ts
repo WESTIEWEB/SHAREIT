@@ -22,7 +22,7 @@ const userSchema = new Schema<IUserInterface>({
     image: {
         type:String, 
         trim: true, 
-        default: 'https://res.cloudinary.com/dxjyqzjxk/image/upload/v1622021008/Default%20Images/Default%20Profile%20Image.png',
+        default: 'https://res.cloudinary.com/dhpstjgo4/image/upload/v1669583621/FoodAlbums/ojkchqru2rb2xetzgyjt.jpg',
         allowNull: false
     },
     password: {type:String, trim: true},

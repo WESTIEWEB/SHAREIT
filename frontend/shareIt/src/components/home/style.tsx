@@ -33,7 +33,7 @@ export const homeStyles = makeStyles((theme) => ({
         top: '3em',
         left: '0',
         "@media (max-width: 400px)": {
-            top: '4.5em'
+            // top: '4.5em'
         }
     },
     titleText:{
@@ -144,7 +144,9 @@ export const PhoneImg = styled('img')({
 
 export const ChatIcon = styled('div')({
     width: '100%',
-    position: 'relative',
+    position: 'fixed',
+    bottom: '10%',
+    right: '-3%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

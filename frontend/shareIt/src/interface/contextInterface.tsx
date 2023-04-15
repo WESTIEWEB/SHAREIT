@@ -1,5 +1,4 @@
-import { IFormInterface } from './formInterface';
-import { IUserInterface } from './userInterface';
+import { IFormInterface ,IUserInterface,  IChat} from '@/interface';
 
 export interface IContextInterface {
     authUser: (input: IUserInterface) => void;
@@ -18,5 +17,6 @@ export interface IContextInterface {
     registerConfig: (registerObj: IFormInterface) => void;
     handleChatModal: () => void;
     showChat: boolean;
+    createNewChatConfig: (file: IChat) => void;
     // verifyToken: () => void;
 }

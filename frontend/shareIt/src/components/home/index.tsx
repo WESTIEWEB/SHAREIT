@@ -26,7 +26,9 @@ const Home = () => {
         // verifyToken();
     }, [])
 
-    const isAuth = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('userData') as string);
+    const isAuth = user?.token;
+    console.log('object', user)
     const GreetUser = () => {
         if(!isAuth) {
             return (
@@ -41,7 +43,7 @@ const Home = () => {
             return (
                 <Link style={{textDecoration:'none'}} to={''}>
                     <Button className={classes.button} variant='contained' color='primary'>
-                        Hi {localStorage.getItem('username')}😎
+                        Hi {user?.username}😎
                     </Button>
                 </Link>
                 

@@ -177,7 +177,7 @@ export const Online = styled('div')({
     }
 })
 
-export const Chat = styled('div')({
+export const Chat = styled('ul')({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -187,9 +187,10 @@ export const Chat = styled('div')({
     height: '75vh',
     width: '100%',
     // marginLeft: '1em',
-    background: 'rgb(255, 255, 255)',
+    // background: 'rgb(255, 255, 255)',
+    backgroundColor: '#f6f6f6',
     color: 'rgb(71, 63, 63)',
-    overflowy: 'overlay',
+    overflowY: 'scroll',
     overflowX: 'hidden',
     // position: 'relative',
     '@media (max-width:768px)': {
@@ -225,7 +226,7 @@ export const TypoGraphy = styled('p')({
     textAlign: 'left',
     color: 'rgb(109, 17, 12)'
 })
-export const ChatHead = styled('ul')({
+export const ChatHead = styled('div')({
     // display: 'flex',
     width: '100%',
     height: 'auto',
@@ -259,7 +260,7 @@ export const OnlineSpan = styled('span')({
     }
 })
 
-export const ChatInputBox = styled('div')({
+export const ChatInputBox = styled('form')({
     // position: 'fixed',
     // bottom: '0',
     padding: '0.em',

@@ -24,7 +24,7 @@ const chatSchema = new Schema<IChat>({
     },
     sender: {
         type: String,
-        required: true
+        // required: true
     },
     createdAt: {
         type: Date,

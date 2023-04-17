@@ -1,5 +1,14 @@
 "use strict";
 // import { io } from '../index';
+Object.defineProperty(exports, "__esModule", { value: true });
+const socketOptions = {
+    path: '/socket.io',
+    transports: ['websocket'],
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST']
+    }
+};
 // const socketConnected = new Set();
 // const onConnected = (socket: any) => {
 //     console.log('socket connected', socket.id);

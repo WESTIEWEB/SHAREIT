@@ -1,5 +1,20 @@
 // import { io } from '../index';
 
+import app from "..";
+import http from 'http';
+import { ChatInstance } from "../model/chat";
+import { getMessages } from "../chat/services";
+import { Server } from 'socket.io';
+
+const socketOptions = {
+  path: '/socket.io',
+  transports: ['websocket'],
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+};
+
 // const socketConnected = new Set();
 
 // const onConnected = (socket: any) => {
@@ -27,3 +42,5 @@
 // io.on('connection', onConnected);
 
 // export default io;
+
+

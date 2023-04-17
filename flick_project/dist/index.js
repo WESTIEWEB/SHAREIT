@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onlineUsers = exports.io = exports.server = void 0;
+exports.onlineUsers = exports.server = void 0;
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
@@ -15,6 +15,7 @@ const users_route_1 = __importDefault(require("./user/routes/users-route"));
 const admin_routes_1 = __importDefault(require("./admin/routes/admin-routes"));
 const chat_engine_route_1 = __importDefault(require("./chat/routes/chat-engine.route"));
 const chat_1 = require("./model/chat");
+const services_1 = require("./chat/services");
 const socketIo = require('socket.io');
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -41,25 +42,23 @@ exports.server = http_1.default.createServer(app);
 exports.server.listen(port, () => {
     console.log(`server is listening on: ${port}`);
 });
-//setting up socket.io
 const socketOptions = {
     path: '/socket.io',
     transports: ['websocket'],
     cors: {
         origin: '*',
         methods: ['GET', 'POST']
-    },
-    credentials: true
+    }
 };
-exports.io = socketIo(exports.server, socketOptions);
 let socketsConnected = new Set();
+const io = socketIo(exports.server, socketOptions);
 // declare a global onlineuser variable
 exports.onlineUsers = new Map();
 let userId;
 let adminId;
 // global.onlineUsers = new Map();
 // io.on('connection', onConnected);
-exports.io.on('connection', (socket) => {
+io.on('connection', (socket) => {
     console.log('Socket connected', socket.id);
     socketsConnected.add(socket.id);
     exports.onlineUsers.set('chatsocket', socket);
@@ -68,22 +67,31 @@ exports.io.on('connection', (socket) => {
     socket.on('user', (sender) => {
         userId = sender;
         exports.onlineUsers.set(userId, socket.id);
-        console.log('id', userId);
+        console.log('userid', userId);
+        io.emit('online-users', exports.onlineUsers);
     });
     //listen to an admin joining
     socket.on('admin', (sender) => {
         adminId = sender;
-        console.log('id', adminId);
+        exports.onlineUsers.set(adminId, socket.id);
+        console.log('adminId', adminId);
+        io.emit('online-users', exports.onlineUsers);
     });
-    exports.io.emit('clients-total', socketsConnected.size);
-    exports.io.emit('online-users', exports.onlineUsers);
+    io.emit('clients-total', socketsConnected.size);
+    //emits online-user event when a client connects
+    io.emit('online-users', exports.onlineUsers);
     socket.on('disconnect', () => {
         console.log('Socket disconnected', socket.id);
         socketsConnected.delete(socket.id);
-        // delete the user from the onlineUsers map
-        exports.onlineUsers.delete(socket.id);
-        exports.io.emit('clients-total', socketsConnected.size);
-        exports.io.emit('online-users', exports.onlineUsers);
+        // delete the user or admin from the onlineUsers map
+        exports.onlineUsers.forEach((value, key) => {
+            if (value === socket.id) {
+                exports.onlineUsers.delete(key);
+            }
+            io.emit('online-users', exports.onlineUsers);
+        });
+        io.emit('clients-total', socketsConnected.size);
+        io.emit('online-users', exports.onlineUsers);
     });
     socket.on('message', (data) => {
         // console.log(JSON.stringify(data))
@@ -103,12 +111,35 @@ exports.io.on('connection', (socket) => {
         }
         const sendUserSocket = exports.onlineUsers.get(data.userId);
         if (sendUserSocket) {
-            exports.io.to(sendUserSocket).emit('chat-message', data);
+            try {
+                const chats = async () => {
+                    return await (0, services_1.getMessages)({ userId: data.userId, adminId: data.adminId });
+                };
+                io.to(sendUserSocket).emit('chat-message', chats);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+        const sendAdminSocket = exports.onlineUsers.get(data.adminId);
+        if (sendAdminSocket) {
+            try {
+                const chats = async () => {
+                    return await (0, services_1.getMessages)({ userId: data.userId, adminId: data.adminId });
+                };
+                io.to(sendAdminSocket).emit('chat-message', chats);
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
     });
-    socket.on('feedback', (data) => {
-        socket.broadcast.emit('feedback', data);
-    });
+    //emit feedback to conversations between the logged in users
+    if (userId && adminId) {
+        socket.on('feedback', (data) => {
+            socket.broadcast.emit('feedback', data);
+        });
+    }
 });
 // function onConnected(socket:any) {
 //   console.log('Socket connected', socket.id);

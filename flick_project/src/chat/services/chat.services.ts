@@ -21,6 +21,7 @@ export const getMessages = async(data: ChatMessageDto) => {
     const messages = await ChatInstance.find()
     .populate('user')
     .populate('admin')
+    .limit(10)
 
     console.log('messages', messages)
 

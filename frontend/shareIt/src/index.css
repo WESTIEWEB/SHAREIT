@@ -129,6 +129,9 @@ body {
 .message:hover > .message-span{
   display: block !important;
 }
+.message {
+  text-align: left;
+}
 .message:hover{
   text-align: left;
 }

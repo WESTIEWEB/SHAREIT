@@ -11,6 +11,7 @@ import chatEngineRoute from './chat/routes/chat-engine.route';
 import { ChatInstance } from './model/chat';
 import { newChatSchema, options } from './utils';
 import { error } from 'console';
+import { getMessages } from './chat/services';
 
 const socketIo = require('socket.io');
 
@@ -36,30 +37,24 @@ app.use('/api/v1/admin', adminRoute);
 //     res.send('hello')
 // })
 
-const port = process.env.port || 3000 
+const port = process.env.port || 3000
 
 export const server = http.createServer(app)
 server.listen(port, ()=> {
     console.log(`server is listening on: ${port}`)
 })
 
-//setting up socket.io
-
 const socketOptions = {
-  path: '/socket.io',
-  transports: ['websocket'],
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  },
-  credentials: true
+    path: '/socket.io',
+    transports: ['websocket'],
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    }
 };
 
-export const io = socketIo(server, socketOptions)
 let socketsConnected = new Set();
-
-
-
+const io = socketIo(server, socketOptions);
 // declare a global onlineuser variable
 export const onlineUsers = new Map<string, any>();
 let userId: string;
@@ -71,28 +66,40 @@ io.on('connection', (socket:any) =>{
   console.log('Socket connected', socket.id);
   socketsConnected.add(socket.id);  
   onlineUsers.set('chatsocket', socket);
+
   //create a new chat instance
 
   //listen to a user joining
   socket.on('user', (sender: string) => {
     userId = sender;
     onlineUsers.set(userId, socket.id)
-    console.log('id', userId)
+    console.log('userid', userId)
+    io.emit('online-users', onlineUsers);
   })
   //listen to an admin joining
   socket.on('admin', (sender: string) => {
     adminId = sender;
-    console.log('id', adminId)
+    onlineUsers.set(adminId, socket.id)
+    console.log('adminId', adminId)
+    io.emit('online-users', onlineUsers);
   })
   io.emit('clients-total', socketsConnected.size);
+
+  //emits online-user event when a client connects
   io.emit('online-users', onlineUsers)
 
   socket.on('disconnect', () => {
     console.log('Socket disconnected', socket.id);
     socketsConnected.delete(socket.id);
 
-    // delete the user from the onlineUsers map
-    onlineUsers.delete(socket.id)
+    // delete the user or admin from the onlineUsers map
+    onlineUsers.forEach((value: string, key: string) => {
+      if (value === socket.id) {
+        onlineUsers.delete(key);
+      }
+
+      io.emit('online-users', onlineUsers);
+    });
     io.emit('clients-total', socketsConnected.size);
     io.emit('online-users', onlineUsers)
   });
@@ -116,15 +123,38 @@ io.on('connection', (socket:any) =>{
     }
     const sendUserSocket = onlineUsers.get(data.userId)
     if(sendUserSocket){
-      io.to(sendUserSocket).emit('chat-message', data);
+      try {
+        const chats = async() => {
+          return await getMessages({userId: data.userId,adminId: data.adminId});
+        }
+        io.to(sendUserSocket).emit('chat-message', chats);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const sendAdminSocket = onlineUsers.get(data.adminId)
+    if(sendAdminSocket){
+      try {
+        const chats = async() => {
+          return await getMessages({userId: data.userId,adminId: data.adminId});
+        }
+        io.to(sendAdminSocket).emit('chat-message', chats);
+      } catch (error) {
+        console.log(error)
+      }
     }
     
   });
 
-  socket.on('feedback', (data:any) => {
-    socket.broadcast.emit('feedback', data);
-  });
+  //emit feedback to conversations between the logged in users
+  if(userId && adminId){
+    socket.on('feedback', (data:any) => {
+      socket.broadcast.emit('feedback', data);
+    });
+  }
 })
+
 // function onConnected(socket:any) {
 //   console.log('Socket connected', socket.id);
 //   socketsConnected.add(socket.id);

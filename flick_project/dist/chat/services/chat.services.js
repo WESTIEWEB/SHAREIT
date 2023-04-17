@@ -19,7 +19,8 @@ const getMessages = async (data) => {
     console.log("userId: ", userId, "adminId: ", adminId);
     const messages = await index_1.ChatInstance.find()
         .populate('user')
-        .populate('admin');
+        .populate('admin')
+        .limit(10);
     console.log('messages', messages);
     const allMessages = messages.map((item) => ({
         owner: item.userId.toString() === item.sender,

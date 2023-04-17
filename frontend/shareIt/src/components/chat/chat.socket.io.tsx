@@ -44,7 +44,7 @@ export default function Chat() {
   //get state from contextApi
   const { handleChatModal, createNewChatConfig } = useAppContext() as unknown as IContextInterface;
   //get username from local storage
-  const user = localStorage.getItem('username');
+  const user = JSON.parse(localStorage.getItem('userData') as string || '{}');
   const classes = chatStyles();
   const messageContainer = useRef<HTMLUListElement>(null);
 
@@ -53,6 +53,11 @@ export default function Chat() {
       setClientsTotal(data);
     });
 
+    // gets the online user data from the server
+    // socket.on("online-users", (data) => setOnlineUsers(data));
+
+    console.log('user', user);
+    socket.emit("user", user?._id)
     socket.on("chat-message", (data) => addMessageToUI(false, data));
 
 
@@ -146,7 +151,7 @@ export default function Chat() {
       )
     }
     else {
-      setName(user)
+      setName(user?.username)
       return (
         <input
             type="text"

@@ -27,9 +27,8 @@ const socketOptions = {
   const socket = io('http://localhost:3600',socketOptions);
   
   interface Message {
-    name: string;
     message: string;
-    dateTime: Date;
+    sender: string;
   }
   interface Props {
     messages: Message[];
@@ -45,27 +44,33 @@ interface IProps {
 
 const AdminChat = ({ currentUser } : IProps) => {
   const [clientsTotal, setClientsTotal] = useState(0);
-  const [onlineUsers, setOnlineUsers] = useState<Array<Record<string,any>>>([]);
+  const [onlineUsers, setOnlineUsers] = useState(new Map<string, any>());
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
   const [name, setName] = useState("anonymous");
   const [text, setText] = useState("");
+  const [onwMessage, setOnwMessage] = useState(false);
   const sender = currentUser;
   const classes = adminChatStyles();
   const messageContainer = useRef<HTMLUListElement>(null);
 
   //get logged in user from local storage
   const user = JSON.parse(localStorage.getItem('userData') as string);
-  
+  console.log('sender', sender)
+  const date = new Date();
+
+  console.log('client-total', clientsTotal)
   useEffect(() => {
     socket.on("clients-total", (data) => {
         setClientsTotal(data);
         }
     );
 
-    socket.on("online-users", (data) => setOnlineUsers(data));
+    socket.on("online-users", (data) => console.log('data', data) );
     socket.emit('admin', (sender))
 
-    socket.on("chat-message", (data) => addMessageToUI(false, data));
+    socket.on("chat-message", (data) =>
+     addMessageToUI(data?.sender === user?._id, data)
+    );
 
 
     socket.on("feedback", (data) => {
@@ -91,9 +96,8 @@ const AdminChat = ({ currentUser } : IProps) => {
     if (text === "") return;
 
     const data = {
-      name,
       message: text,
-      dateTime: new Date(),
+      sender: user?._id,
     };
 
     socket.emit("message", data);
@@ -113,11 +117,12 @@ const AdminChat = ({ currentUser } : IProps) => {
     clearFeedback();
     const element = (
       <li className={isOwnMessage ? "message-right" : "message-left"}>
+        {isOwnMessage !== true? <Img className={classes.chatProfile} src={user?.image} alt="profile"/>: '' }
         <p className="message">
           {data.message}
           <span className="message-span">
-            {data.name} ●  
-            {moment(data.dateTime).fromNow()}
+            {name} ●  
+            {moment(date.getTime()).fromNow()}
           </span>
         </p>
       </li>
@@ -411,8 +416,8 @@ const AdminChat = ({ currentUser } : IProps) => {
                         {name}
                     </span>
                 </Box>
-                <Chat>
-                    <Box className={classes.chatsRight}>
+                <Chat ref={messageContainer}>
+                    {/* <Box className={classes.chatsRight}>
                         <ChatHead>
                             <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
                                 Rahila says 'hello'                         
@@ -451,10 +456,22 @@ const AdminChat = ({ currentUser } : IProps) => {
                                 Rahila says 'hello'                           
                             </Typography>
                         </ChatHead>
-                    </Box>
+                    </Box> */}
+                    {
+                        messages.map((message:any, index: number) =>
+                        <React.Fragment key={index}>
+                            {message}
+                        </React.Fragment>
+                        )
+                    }
                 </Chat>
-                <ChatInputBox>
-                        <ChatInput onChange={handleTextareaChange} type="text"/>
+                <ChatInputBox onSubmit={sendMessage}>
+                        <ChatInput 
+                            onChange={handleTextareaChange} 
+                            type="text" value={text}
+                            name="message"
+                            id="message-input"
+                        />
                         {/* <Box style={{height: '100%', width: '2px', background: 'black'}}></Box> */}
                         <Button type="submit" style={{height:'90%'}} variant="text">
                             <GrSend style={{fontSize:'1.3em'}} />

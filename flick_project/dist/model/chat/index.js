@@ -37,7 +37,7 @@ const chatSchema = new mongoose_1.Schema({
     },
     sender: {
         type: String,
-        required: true
+        // required: true
     },
     createdAt: {
         type: Date,

@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-export interface IUserInterface {
+interface IUserInterface {
     toObject: any;
     dataValues: any;
     _id: string;

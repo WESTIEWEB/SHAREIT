@@ -1,11 +1,12 @@
 import express from 'express';
-import { IUserInterface, UserInstance } from '../../model/user';
+import { UserInstance } from '../../model/user';
 import { generateHash, generateSalt, verifyPassword, checkEmailPhone } from '../../utils';
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import { CHAT_ENGINE_URL, JWT_SECRET, PRIVATE_KEY, PROJECT_ID } from '../../config';
 import { CreateUserDto, UserLoginDto,IuserDto } from '../dto';
 import axios from 'axios';
 import { AdminInstance } from '../../model/admin';
+import { IUserInterface } from '../interface';
 
 // ===== user registration services ===== //
 export const registerUser = async (input: CreateUserDto) => {

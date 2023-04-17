@@ -91,3 +91,34 @@ export const createAdmin = async (payload: AuthAminDto, data: CreateAdminDto) =>
     };
 }
 
+// Get Admins service
+export const getAdmins = async (payload: AuthAminDto) => {
+    const id = payload._id;
+
+    //check if the user is a superAdmin
+    const isSuperAdmin = await AdminInstance.findOne({_id: id, role: 'superAdmin'}).lean();
+    if(!isSuperAdmin){
+        throw new Error('You are not authorized to perform this operation')
+    }
+
+    const admins = await AdminInstance.find({role: 'admin'}).lean();
+
+    return admins;
+}
+
+// get admin by id
+export const getAdminById = async (id: string) => {
+    //check if the user is a superAdmin
+    const admin = await AdminInstance.findById(id);
+
+    if(!admin) {
+        throw new Error('Admin not found')
+    }
+    const adminObj = admin?.toObject();
+    delete adminObj.password;
+    delete adminObj.salt;
+
+    return {
+        ...adminObj
+    }
+}

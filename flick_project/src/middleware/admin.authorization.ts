@@ -22,7 +22,7 @@ export const authAdmin = async (req: JwtPayload, res: Response, next: NextFuncti
                 message: 'user not authorized, please sign in'
             })
         }
-        const id  = decoded._id;
+        const id  = decoded.id;
         console.log('id...',id)
 
         //verify if admin with id exist

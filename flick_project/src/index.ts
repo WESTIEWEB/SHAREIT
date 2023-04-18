@@ -21,7 +21,7 @@ const DB_URL = process.env.DB_URI || 'mongodb://localhost:27017/ecommerce';
 try{
     dbConnection(DB_URL);
 } catch(err) {
-    console.log(err)
+    console.log("database connection errot", err)
 }
 
 app.use(cors());

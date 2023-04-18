@@ -24,7 +24,7 @@ try {
     (0, database_1.dbConnection)(DB_URL);
 }
 catch (err) {
-    console.log(err);
+    console.log("database connection errot", err);
 }
 app.use((0, cors_1.default)());
 app.use((0, morgan_1.default)('dev'));

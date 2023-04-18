@@ -13,6 +13,7 @@ import { IContextInterface } from "@/interface";
 import profile from '@/assets/profile.jpg'
 import { Typography } from "@material-ui/core";
 import { ICurrentUser } from "@/interface/currentUser";
+import { onlineUsers } from '../../../../../../flick_project/src/index';
 
 const socketOptions = {
     path: '/socket.io',
@@ -44,7 +45,7 @@ interface IProps {
 
 const AdminChat = ({ currentUser } : IProps) => {
   const [clientsTotal, setClientsTotal] = useState(0);
-  const [onlineUsers, setOnlineUsers] = useState(new Map<string, any>());
+  const [onlineUsers, setOnlineUsers] = useState<Array<Object>>([]);
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
   const [name, setName] = useState("anonymous");
   const [text, setText] = useState("");
@@ -57,7 +58,6 @@ const AdminChat = ({ currentUser } : IProps) => {
   const user = JSON.parse(localStorage.getItem('userData') as string);
   console.log('sender', sender)
   const date = new Date();
-
   console.log('client-total', clientsTotal)
   useEffect(() => {
     socket.on("clients-total", (data) => {
@@ -65,7 +65,14 @@ const AdminChat = ({ currentUser } : IProps) => {
         }
     );
 
-    socket.on("online-users", (data) => console.log('data', data) );
+    socket.on("online-users", (data) => {
+        setOnlineUsers(data)
+        console.log('Online users:', onlineUsers);
+    } );
+
+    socket.on("chat-users", (data) => {
+        console.log('>>> users:', data);
+    } );
     socket.emit('admin', (sender))
 
     socket.on("chat-message", (data) =>
@@ -89,7 +96,6 @@ const AdminChat = ({ currentUser } : IProps) => {
       socket.disconnect();
     };
   }, [sender]);
-  console.log('onlineUsers', onlineUsers)
 
   function sendMessage(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -157,233 +163,6 @@ const AdminChat = ({ currentUser } : IProps) => {
                 <hr style={{marginTop: '0', color: 'red'}} className={classes.hideIt}/>
                 <Box className={classes.online}>
                     <Img src={profile} alt="profile"/>
-                    <span className={classes.HiddenSpan}>
-                        hello
-                    </span>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'                            
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                            {21}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
                     <Head>
                         <TypoGraphy>
                             Rahila
@@ -424,36 +203,11 @@ const AdminChat = ({ currentUser } : IProps) => {
                             </Typography>
                         </ChatHead>
                     </Box>
-                    <Box className={classes.chatsRight}>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                            
-                            </Typography>
-                        </ChatHead>
-                    </Box>
-                    <Box className={classes.chatsLeft}>
-                        <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                        
-                            </Typography>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                        
-                            </Typography>
-                        </ChatHead>
-                    </Box>
                     <Box className={classes.chatsLeft}>
                         <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
                         <ChatHead>
                             <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
                                 Rahila says 'hello' i dh hd                            
-                            </Typography>
-                        </ChatHead>
-                    </Box>
-                    <Box className={classes.chatsRight}>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                           
                             </Typography>
                         </ChatHead>
                     </Box> */}

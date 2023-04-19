@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import logo from '@/assets/logo2.svg';
 import { useAppContext } from "@/context";
 import { IContextInterface } from "@/interface";
+import { socketUri } from "@/utils";
 const socketOptions = {
   path: '/socket.io',
   transports: ['websocket'],
@@ -20,7 +21,7 @@ const socketOptions = {
   credentials: true
 };
 
-const socket = io('http://localhost:3600',socketOptions);
+const socket = io(socketUri,socketOptions);
 
 interface Message {
   name: string;

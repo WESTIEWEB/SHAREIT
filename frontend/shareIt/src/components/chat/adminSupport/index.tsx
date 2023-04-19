@@ -14,6 +14,7 @@ import profile from '@/assets/profile.jpg'
 import { Typography } from "@material-ui/core";
 import { ICurrentUser } from "@/interface/currentUser";
 import { onlineUsers } from '../../../../../../flick_project/src/index';
+import { socketUri } from "@/utils";
 
 const socketOptions = {
     path: '/socket.io',
@@ -25,7 +26,7 @@ const socketOptions = {
     credentials: true
   };
   
-  const socket = io('http://localhost:3600',socketOptions);
+  const socket = io(socketUri,socketOptions);
   
   interface Message {
     message: string;

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConnection = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const dbConnection = async (url) => {
-    const connection = await mongoose_1.default.createConnection(url);
+    const connection = await mongoose_1.default.connect(url);
     if (connection) {
         return console.log('database connected successfully...');
     }

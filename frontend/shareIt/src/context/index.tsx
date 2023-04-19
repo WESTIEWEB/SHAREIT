@@ -129,27 +129,12 @@ const AppProvider = ({ children }: IAppContext) => {
         }
     }
 
-    //========================== Function that verifies Token ==========================
-    // const verifyToken = async() => {
-    //     //get token from local storage
-    //     const token = localStorage.getItem('token');
-    //     if(!token) return null;
-    
-    //     //if token exists, verify it
-    //     const verify = jwt.verify(token, import.meta.env.VITE_APP_SECRET) as JwtPayload;
-    //     if (verify) {
-    //         const expiry : number | undefined = verify.exp;
-    //         if(!expiry) return null;
-    
-    //         const now = new Date().getTime() / 1000;
-    
-    //         //if token is expired, remove it from local storage
-    //         if (now > expiry) {
-    //             localStorage.removeItem('token');
-    //             return null;
-    //         }
-    //     }
-    // }
+    //Logout config
+    const logOutConfig = () => {
+        // localStorage.removeItem('userData')
+        localStorage.clear()
+        window.location.href = '/login'
+    }
   return (
     <AppContext.Provider value={{
         authUser,
@@ -166,7 +151,8 @@ const AppProvider = ({ children }: IAppContext) => {
         registerConfig,
         handleChatModal,
         showChat,
-        createNewChatConfig
+        createNewChatConfig,
+        logOutConfig
         
         // verifyToken
     }}>

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 interface IAdminInterface {
     toObject: any;
@@ -16,7 +16,7 @@ interface IAdminInterface {
 }
 
 const adminSchema = new Schema<IAdminInterface>({
-    _id: {type: String, default: uuidv4()},
+    // _id: {type: String, default: uuidv4()},
     username: {type:String, trim: true},
     email: {type:String, unique: true, trim: true, toLowerCase: true},
     phone: {type:String, unique: true, trim: true},

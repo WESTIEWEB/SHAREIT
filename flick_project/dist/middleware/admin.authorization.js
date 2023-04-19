@@ -25,7 +25,7 @@ const authAdmin = async (req, res, next) => {
                 message: 'user not authorized, please sign in'
             });
         }
-        const id = decoded._id;
+        const id = decoded.id;
         console.log('id...', id);
         //verify if admin with id exist
         const admin = await admin_1.AdminInstance.findById(id);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAdmin = exports.creatSuperAdmin = void 0;
+exports.getAdminById = exports.getAdmins = exports.createAdmin = exports.creatSuperAdmin = void 0;
 const config_1 = require("../../config");
 const admin_1 = require("../../model/admin");
 const utils_1 = require("../../utils");
@@ -76,4 +76,31 @@ const createAdmin = async (payload, data) => {
     };
 };
 exports.createAdmin = createAdmin;
+// Get Admins service
+const getAdmins = async (payload) => {
+    const id = payload._id;
+    //check if the user is a superAdmin
+    const isSuperAdmin = await admin_1.AdminInstance.findOne({ _id: id, role: 'superAdmin' }).lean();
+    if (!isSuperAdmin) {
+        throw new Error('You are not authorized to perform this operation');
+    }
+    const admins = await admin_1.AdminInstance.find({ role: 'admin' }).lean();
+    return admins;
+};
+exports.getAdmins = getAdmins;
+// get admin by id
+const getAdminById = async (id) => {
+    //check if the user is a superAdmin
+    const admin = await admin_1.AdminInstance.findById(id);
+    if (!admin) {
+        throw new Error('Admin not found');
+    }
+    const adminObj = admin === null || admin === void 0 ? void 0 : admin.toObject();
+    delete adminObj.password;
+    delete adminObj.salt;
+    return {
+        ...adminObj
+    };
+};
+exports.getAdminById = getAdminById;
 //# sourceMappingURL=admin.services.js.map

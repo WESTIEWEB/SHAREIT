@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import moment from "moment";
 import Box from '@material-ui/core/Box'
-import { ChatContainer, adminChatStyles, Online, Chat, Img, Head, OnlineSpan, ChatInputBox, ChatInput, ChatHead, TypoGraphy } from "./styles";
+import { ChatContainer, adminChatStyles, Online, Chat, Img, Head, OnlineSpan, ChatInputBox, ChatInput, ChatHead, TypoGraphy, Nav } from "./styles";
 import { GrSend } from 'react-icons/gr';
 import { BsPersonBadgeFill } from 'react-icons/bs'
 import { VscCloseAll } from 'react-icons/vsc';
@@ -13,6 +13,8 @@ import { IContextInterface } from "@/interface";
 import profile from '@/assets/profile.jpg'
 import { Typography } from "@material-ui/core";
 import { ICurrentUser } from "@/interface/currentUser";
+import { IOnlineUserInterface } from "@/interface/onlineUserInterface";
+import NavBar from "@/components/Nav";
 
 const socketOptions = {
     path: '/socket.io',
@@ -42,34 +44,39 @@ interface IProps {
     
 }
 
-const AdminChat = ({ currentUser } : IProps) => {
+const AdminChat = () => {
   const [clientsTotal, setClientsTotal] = useState(0);
-  const [onlineUsers, setOnlineUsers] = useState(new Map<string, any>());
+  const [currentUser, setCurrentUser] = useState<IOnlineUserInterface>({} as IOnlineUserInterface);
+  const [onlineUsers, setOnlineUsers] = useState<IOnlineUserInterface[]>([]);
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
   const [name, setName] = useState("anonymous");
   const [text, setText] = useState("");
   const [onwMessage, setOnwMessage] = useState(false);
-  const sender = currentUser;
+
+  //get logged in user from local storage
+  const user = JSON.parse(localStorage.getItem('userData') as string || '{}')
+  const sender = user?._id;
+
+  
   const classes = adminChatStyles();
   const messageContainer = useRef<HTMLUListElement>(null);
 
-  //get logged in user from local storage
-  const user = JSON.parse(localStorage.getItem('userData') as string);
   console.log('sender', sender)
   const date = new Date();
 
-  console.log('client-total', clientsTotal)
   useEffect(() => {
     socket.on("clients-total", (data) => {
         setClientsTotal(data);
         }
     );
-
-    socket.on("online-users", (data) => console.log('data', data) );
-    socket.emit('admin', (sender))
-
-    socket.on("chat-message", (data) =>
-     addMessageToUI(data?.sender === user?._id, data)
+    
+    if(currentUser._id) {
+      socket.emit('admin', (sender))
+    }
+    socket.on("online-users", (data) => setOnlineUsers(data) );
+    socket.on("chat-message", (data) =>{
+     addMessageToUI(data?.owner, data)
+    }
     );
 
 
@@ -145,343 +152,107 @@ const AdminChat = ({ currentUser } : IProps) => {
     useEffect(() => {
         setName(user?.username)
     }, [user]);
-
+  
+  // function that sets current user
+  const handleOnlineUsers = (e:any) => {
+    setCurrentUser(e)
+  }
   return (
-    <Box className={classes.parent1}>
-      <Box className={classes.parent}>
-        <ChatContainer>
-            <Online>
-                <Box className={classes.online1}>
-                    <input type="text" placeholder="search user" className={classes.search} />
-                </Box>
-                <hr style={{marginTop: '0', color: 'red'}} className={classes.hideIt}/>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <span className={classes.HiddenSpan}>
-                        hello
-                    </span>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'                            
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                            {21}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'
-                        </TypoGraphy>
-                    </Head>
-                    <OnlineSpan>
-                        {2}
-                    </OnlineSpan>
-                </Box>
-                <Box className={classes.online}>
-                    <Img src={profile} alt="profile"/>
-                    <Head>
-                        <TypoGraphy>
-                            Rahila
-                        </TypoGraphy>
-                        <TypoGraphy>
-                            Rahila says 'hello'                            
-                        </TypoGraphy>
-                    </Head>
-                </Box>
-            </Online>
-            <div className={classes.hideIt}></div>
-            <Box className={classes.chatBox}>
-                <Box className={classes.title}>
-                    <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
-                    <span>
-                        {name}
-                    </span>
-                </Box>
-                <Chat ref={messageContainer}>
-                    {/* <Box className={classes.chatsRight}>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                         
-                            </Typography>
-                        </ChatHead>
-                    </Box>
-                    <Box className={classes.chatsRight}>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                            
-                            </Typography>
-                        </ChatHead>
-                    </Box>
-                    <Box className={classes.chatsLeft}>
-                        <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                        
-                            </Typography>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                        
-                            </Typography>
-                        </ChatHead>
-                    </Box>
-                    <Box className={classes.chatsLeft}>
-                        <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello' i dh hd                            
-                            </Typography>
-                        </ChatHead>
-                    </Box>
-                    <Box className={classes.chatsRight}>
-                        <ChatHead>
-                            <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
-                                Rahila says 'hello'                           
-                            </Typography>
-                        </ChatHead>
-                    </Box> */}
-                    {
-                        messages.map((message:any, index: number) =>
-                        <React.Fragment key={index}>
-                            {message}
-                        </React.Fragment>
-                        )
-                    }
-                </Chat>
-                <ChatInputBox onSubmit={sendMessage}>
-                        <ChatInput 
-                            onChange={handleTextareaChange} 
-                            type="text" value={text}
-                            name="message"
-                            id="message-input"
-                        />
-                        {/* <Box style={{height: '100%', width: '2px', background: 'black'}}></Box> */}
-                        <Button type="submit" style={{height:'90%'}} variant="text">
-                            <GrSend style={{fontSize:'1.3em'}} />
-                        </Button>
-                </ChatInputBox>
-            </Box>
-            <div className={classes.hideIt}></div>
-        </ChatContainer>
+    <React.Fragment>
+      <NavBar />
+      <Box className={classes.parent1}>
+        <Box className={classes.parent}>
+          <ChatContainer>
+              <Online>
+                  <Box className={classes.online1}>
+                      <input type="text" placeholder="search user" className={classes.search} />
+                  </Box>
+                  <hr style={{marginTop: '0', color: 'red', width: '90%'}} className={classes.hideIt}/>
+                  {
+                      onlineUsers?.map((item:IOnlineUserInterface, index:number) =>
+                      <React.Fragment>
+                          <Box onClick={(e:any) => handleOnlineUsers(item)} className={classes.online}>
+                              <Img src={item.image} alt="image"/>
+                              <span className={classes.HiddenSpan}>
+                                  hello
+                              </span>
+                              <Head>
+                                  <TypoGraphy>
+                                      {item.username}
+                                  </TypoGraphy>
+                                  <TypoGraphy>
+                                      Open message
+                                  </TypoGraphy>
+                              </Head>
+                              <OnlineSpan>
+                                      {2}
+                              </OnlineSpan>
+                          </Box>
+                      </React.Fragment>
+                      )
+                  }
+                  <Box className={classes.online}>
+                      <Img src={profile} alt="profile"/>
+                      <Head>
+                          <TypoGraphy>
+                              Rahila
+                          </TypoGraphy>
+                          <TypoGraphy>
+                              Rahila says 'hello'
+                          </TypoGraphy>
+                      </Head>
+                  </Box>
+              </Online>
+              <div className={classes.hideIt}></div>
+              <Box className={classes.chatBox}>
+                  <Box className={classes.title}>
+                      <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
+                      <span>
+                          {name}
+                      </span>
+                  </Box>
+                  <Chat ref={messageContainer}>
+                      {/* <Box className={classes.chatsRight}>
+                          <ChatHead>
+                              <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
+                                  Rahila says 'hello'
+                              </Typography>
+                          </ChatHead>
+                      </Box>
+                      <Box className={classes.chatsLeft}>
+                          <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
+                          <ChatHead>
+                              <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
+                                  Rahila says 'hello' i dh hd
+                              </Typography>
+                          </ChatHead>
+                      </Box> */}
+                      {
+                          messages.map((message:any, index: number) =>
+                          <React.Fragment key={index}>
+                              {message}
+                          </React.Fragment>
+                          )
+                      }
+                  </Chat>
+                  <ChatInputBox onSubmit={sendMessage}>
+                          <ChatInput
+                              onChange={handleTextareaChange}
+                              type="text" value={text}
+                              name="message"
+                              id="message-input"
+                          />
+                          {/* <Box style={{height: '100%', width: '2px', background: 'black'}}></Box> */}
+                          <Button type="submit" style={{height:'90%'}} variant="text">
+                              <GrSend style={{fontSize:'1.3em'}} />
+                          </Button>
+                  </ChatInputBox>
+              </Box>
+              <div className={classes.hideIt}></div>
+          </ChatContainer>
+        </Box>
       </Box>
-    </Box>
+    </React.Fragment>
   )
 }
 

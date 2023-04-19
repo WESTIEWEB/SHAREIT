@@ -129,7 +129,7 @@ io.on('connection', (socket:any) =>{
     socketsConnected.delete(socket.id);
 
     // delete the user from the onlineUsers map
-    users = users.filter((user) => user._id !== userId)
+    users = users.filter((user) => user.socketId !== socket.id)
 
     console.log(`user ${userId} disconnected`)
 
@@ -176,44 +176,46 @@ io.on('connection', (socket:any) =>{
     //   }
     // }
 
-    // send chat to a particular user's cocket
-    const userSocket = users.find((user) => user._id === data.userId)
-    if(userSocket){
-      try {
-        const chats = await getMessages({userId: data.userId,adminId: data.adminId});
-        io.to(userSocket.socketId).emit('chat-message', chats);
-      } catch (error) {
-        console.log(error)
+    if(data.sender === userId) {
+      
+      const adminSocket = admins.find((admin) => admin._id === data.adminId)
+      if(adminSocket){
+        try {
+          const chats = await getMessages({userId: data.userId,adminId: data.adminId});
+          io.to(adminSocket.socketId).emit('chat-message', chats);
+        } catch (error) {
+          console.log(error)
+        }
       }
-    }else{
       return
-    }
 
-    // const sendAdminSocket = onlineUsers.get(data.adminId)
-    // if(sendAdminSocket){
-    //   try {
-    //     const chats = await getMessages({userId: data.userId,adminId: data.adminId});
-    
-    //     io.to(sendAdminSocket).emit('chat-message', chats);
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }else {
-    //   return
-    // }
-
-    const adminSocket = admins.find((admin) => admin._id === data.adminId)
-    if(adminSocket){
-      try {
-        const chats = await getMessages({userId: data.userId,adminId: data.adminId});
-        io.to(adminSocket.socketId).emit('chat-message', chats);
-      } catch (error) {
-        console.log(error)
+    } else{
+      // send chat to a particular user's cocket
+      const userSocket = users.find((user) => user._id === data.userId)
+      if(userSocket){
+        try {
+          const chats = await getMessages({userId: data.userId,adminId: data.adminId});
+          io.to(userSocket.socketId).emit('chat-message', chats);
+        } catch (error) {
+          console.log(error)
+        }
       }
-    }else{
       return
-    }
 
+      // const sendAdminSocket = onlineUsers.get(data.adminId)
+      // if(sendAdminSocket){
+      //   try {
+      //     const chats = await getMessages({userId: data.userId,adminId: data.adminId});
+      
+      //     io.to(sendAdminSocket).emit('chat-message', chats);
+      //   } catch (error) {
+      //     console.log(error)
+      //   }
+      // }else {
+      //   return
+      // }
+
+    }
     
   });
 

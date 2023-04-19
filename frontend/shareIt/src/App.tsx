@@ -26,7 +26,7 @@ function App() {
           <Route path='/chat-apk' element={<ChatModal />} />
           <Route path='/' element={<Home />} />
           <Route path='chat' element={<Chat />} />
-          <Route path='/admin-chat' element={<AdminChat currentUser={currentUser} />} />
+          <Route path='/admin-chat' element={<AdminChat />} />
         </Routes>
       </Router>
     </>

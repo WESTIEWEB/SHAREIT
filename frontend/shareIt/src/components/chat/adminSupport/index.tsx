@@ -64,7 +64,6 @@ const AdminChat = () => {
   const classes = adminChatStyles();
   const messageContainer = useRef<HTMLUListElement>(null);
   const date = new Date();
-
   useEffect(() => {
     socket.on("clients-total", (data) => {
         setClientsTotal(data);

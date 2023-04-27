@@ -1,7 +1,8 @@
 import mongoose, { Schema, Types, model, ObjectId } from "mongoose";
-import { IUserInterface } from "../user";
-import { IAdminInterface } from "../admin";
 import { UserType } from '../../common/user-type.common';
+import { IUserInterface } from "../../user/interface";
+import { IAdminInterface } from "../../admin/interface";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IChat{
     _id?: Types.ObjectId;

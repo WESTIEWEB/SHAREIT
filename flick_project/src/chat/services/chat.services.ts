@@ -1,5 +1,6 @@
 import { ChatDto, ChatMessageDto, CreateChatDto } from "../dto";
 import { ChatInstance } from '../../model/chat/index';
+import { IMessageProps } from "../interface";
 // a functoion that creates a new chat room
 export const createChatRoom = async(data:CreateChatDto) => {
     const chat = await ChatInstance.create({
@@ -14,7 +15,7 @@ export const createChatRoom = async(data:CreateChatDto) => {
 
 
 // get messages from chat entity 
-export const getMessages = async(data: ChatMessageDto) => {
+export const getMessages = async(data: ChatMessageDto): Promise<IMessageProps[]> => {
     const { userId, adminId } = data;
     console.log("userId: ", userId, "adminId: ", adminId)
 
@@ -25,7 +26,7 @@ export const getMessages = async(data: ChatMessageDto) => {
 
     console.log('messages', messages)
 
-    const allMessages = messages.map((item) => ({
+    const allMessages: IMessageProps[] = messages.map((item) => ({
         owner: item.userId.toString() === item.sender,
         message: item.message,
         dateTime : item.createdAt

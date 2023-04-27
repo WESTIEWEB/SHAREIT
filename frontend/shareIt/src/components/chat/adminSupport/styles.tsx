@@ -7,8 +7,11 @@ export const adminChatStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         justifyContent: 'center',
         // alignItems: 'center',
+        position: 'relative',
+        bottom: '-4%',
         width: '100vw',
-        height: '100vh'
+        height: '82vh',
+        
     },
     parent:{
         display: 'flex',
@@ -17,7 +20,7 @@ export const adminChatStyles = makeStyles((theme) => ({
         alignItems: 'center',
         pading: '1em',
         width: '100%',
-        height: '100vh'
+        height: '100%',
     },
     online: {
         // height: '4rem',
@@ -77,15 +80,14 @@ export const adminChatStyles = makeStyles((theme) => ({
     hideIt: {
         width:'4px', 
         background:'', 
-        margin:'2px', 
-        height: '100vh',
+        margin:'2px',
         '@media (max-width: 768px)': {
             display: 'none'
         }
     },
     chatBox: {
         width: '79%',
-        height: '100vh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -143,10 +145,15 @@ export const adminChatStyles = makeStyles((theme) => ({
 
 }))
 
+export const Nav = styled('nav')({
+    width: '100%',
+    height: '70px',
+    background: 'blue'
+})
 export const ChatContainer = styled('div')({
     display: 'flex',
     width: '100%',
-    height: '100vh',
+    height: '90vh',
     // justifyContent: 'center'
     overflow: 'hidden',
     marginTop: '0.5em',
@@ -159,7 +166,7 @@ export const Online = styled('div')({
     display: 'flex',
     position: 'relative',
     flexDirection: 'column',
-    height: '95vh',
+    height: '95%',
     gap: '1em',
     width: '30%',
     color: 'rgb(31, 30, 30))',
@@ -167,6 +174,7 @@ export const Online = styled('div')({
     overflowY: 'scroll',
     overfloyX: 'hidden !important',
     padding: '0.8em',
+    alignItems: 'center',
     '@media (max-width:768px)':{
         // flexDirection: 'row',
         // height: '20em',
@@ -202,7 +210,8 @@ export const Chat = styled('ul')({
 export const Img = styled('img')({
     width: '40px',
     height: '40px',
-    borderRadius: '50%'
+    borderRadius: '50%',
+    fontSize: '12px',
 })
 
 export const Head = styled('div')({

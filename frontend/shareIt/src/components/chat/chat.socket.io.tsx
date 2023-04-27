@@ -25,8 +25,10 @@ const socket = io(socketUri,socketOptions);
 
 interface Message {
   name: string;
+  owner: boolean;
   message: string;
   dateTime: Date;
+  sender: string;
 }
 interface Props {
   messages: Message[];
@@ -41,7 +43,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Array<Record<string,any>>>([]);
   const [name, setName] = useState("anonymous");
   const [text, setText] = useState("");
-  
+  // const [user, setUser] = useState<Record<string,any>>({});
   //get state from contextApi
   const { handleChatModal, createNewChatConfig } = useAppContext() as unknown as IContextInterface;
   //get username from local storage
@@ -49,17 +51,26 @@ export default function Chat() {
   const classes = chatStyles();
   const messageContainer = useRef<HTMLUListElement>(null);
 
+
+
   useEffect(() => {
     socket.on("clients-total", (data) => {
       setClientsTotal(data);
+      
     });
 
     // gets the online user data from the server
-    // socket.on("online-users", (data) => setOnlineUsers(data));
+    socket.on("online-users", (data) => setOnlineUsers(data));
 
     console.log('user', user);
     socket.emit("user", user?._id)
-    socket.on("chat-message", (data) => addMessageToUI(false, data));
+    socket.on("chat-message", (data) => {
+      console.log('chat message received', data);
+      // data?.forEach((message: Message) => {
+      //   addMessageToUI(message.sender === user?._id, message);
+      // });
+      addMessageToUI(data?.sender === user?._id, data);
+    });
 
 
     socket.on("feedback", (data) => {
@@ -91,10 +102,12 @@ export default function Chat() {
       name,
       message: text,
       dateTime: new Date(),
+      sender: user?._id,
+      owner: true,
     };
 
     socket.emit("message", data);
-    addMessageToUI(true, data);
+    addMessageToUI(data.sender == user?._id, data);
     setText("");
   }
 

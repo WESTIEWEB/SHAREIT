@@ -15,6 +15,7 @@ import { Typography } from "@material-ui/core";
 import { ICurrentUser } from "@/interface/currentUser";
 import { IOnlineUserInterface } from "@/interface/onlineUserInterface";
 import NavBar from "@/components/Nav";
+import { socketUri } from "@/utils";
 
 const socketOptions = {
     path: '/socket.io',
@@ -26,9 +27,11 @@ const socketOptions = {
     credentials: true
   };
   
-  const socket = io('http://localhost:3600',socketOptions);
+  const socket = io(socketUri,socketOptions);
   
   interface Message {
+    owner: boolean;
+    dateTime?: Date;
     message: string;
     sender: string;
   }
@@ -60,8 +63,6 @@ const AdminChat = () => {
   
   const classes = adminChatStyles();
   const messageContainer = useRef<HTMLUListElement>(null);
-
-  console.log('sender', sender)
   const date = new Date();
 
   useEffect(() => {
@@ -70,15 +71,18 @@ const AdminChat = () => {
         }
     );
     
-    if(currentUser._id) {
+    if(sender) {
       socket.emit('admin', (sender))
     }
     socket.on("online-users", (data) => setOnlineUsers(data) );
     socket.on("chat-message", (data) =>{
-     addMessageToUI(data?.owner, data)
+      console.log('data', data)
+      // data?.forEach((message: Message) => {
+      //   addMessageToUI(message?.owner, message);
+      // });
+     addMessageToUI(data?.sender === user?._id, data)
     }
     );
-
 
     socket.on("feedback", (data) => {
       clearFeedback();
@@ -96,7 +100,7 @@ const AdminChat = () => {
       socket.disconnect();
     };
   }, [sender]);
-  console.log('onlineUsers', onlineUsers)
+  // console.log('onlineUsers', onlineUsers)
 
   function sendMessage(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -105,6 +109,7 @@ const AdminChat = () => {
     const data = {
       message: text,
       sender: user?._id,
+      owner: true,
     };
 
     socket.emit("message", data);
@@ -118,17 +123,16 @@ const AdminChat = () => {
       feedback: `✍️ ${name} is typing a message`,
     });
   }
-  console.log('text', text, name)
   
   function addMessageToUI(isOwnMessage: boolean, data: Message) {
     clearFeedback();
     const element = (
       <li className={isOwnMessage ? "message-right" : "message-left"}>
-        {isOwnMessage !== true? <Img className={classes.chatProfile} src={user?.image} alt="profile"/>: '' }
+        {isOwnMessage !== true? <Img className={classes.chatProfile} src={currentUser?.image} alt="profile"/>: '' }
         <p className="message">
           {data.message}
           <span className="message-span">
-            {name} ●  
+            {currentUser.username} ●  
             {moment(date.getTime()).fromNow()}
           </span>
         </p>
@@ -157,61 +161,12 @@ const AdminChat = () => {
   const handleOnlineUsers = (e:any) => {
     setCurrentUser(e)
   }
-  return (
-    <React.Fragment>
-      <NavBar />
-      <Box className={classes.parent1}>
-        <Box className={classes.parent}>
-          <ChatContainer>
-              <Online>
-                  <Box className={classes.online1}>
-                      <input type="text" placeholder="search user" className={classes.search} />
-                  </Box>
-                  <hr style={{marginTop: '0', color: 'red', width: '90%'}} className={classes.hideIt}/>
-                  {
-                      onlineUsers?.map((item:IOnlineUserInterface, index:number) =>
-                      <React.Fragment>
-                          <Box onClick={(e:any) => handleOnlineUsers(item)} className={classes.online}>
-                              <Img src={item.image} alt="image"/>
-                              <span className={classes.HiddenSpan}>
-                                  hello
-                              </span>
-                              <Head>
-                                  <TypoGraphy>
-                                      {item.username}
-                                  </TypoGraphy>
-                                  <TypoGraphy>
-                                      Open message
-                                  </TypoGraphy>
-                              </Head>
-                              <OnlineSpan>
-                                      {2}
-                              </OnlineSpan>
-                          </Box>
-                      </React.Fragment>
-                      )
-                  }
-                  <Box className={classes.online}>
-                      <Img src={profile} alt="profile"/>
-                      <Head>
-                          <TypoGraphy>
-                              Rahila
-                          </TypoGraphy>
-                          <TypoGraphy>
-                              Rahila says 'hello'
-                          </TypoGraphy>
-                      </Head>
-                  </Box>
-              </Online>
-              <div className={classes.hideIt}></div>
-              <Box className={classes.chatBox}>
-                  <Box className={classes.title}>
-                      <Img className={classes.chatProfile} src={user?.image} alt="profile"/>
-                      <span>
-                          {name}
-                      </span>
-                  </Box>
-                  <Chat ref={messageContainer}>
+
+  // show chat with selected user
+  const ChatMessages = () => {
+    if(currentUser._id){
+      return (
+        <Chat ref={messageContainer}>
                       {/* <Box className={classes.chatsRight}>
                           <ChatHead>
                               <Typography style={{fontSize:'14px', textAlign: 'left', width: 'auto'}} color="textPrimary" variant="h6">
@@ -235,6 +190,75 @@ const AdminChat = () => {
                           )
                       }
                   </Chat>
+      )
+    }
+    return (
+      <Chat ref={messageContainer}>
+        <Typography variant="h6" color="textPrimary" style={{textAlign: 'center', marginTop: '20px'}}>
+          Select a user to chat with
+        </Typography>
+      </Chat>
+    )
+  }
+  return (
+    <React.Fragment>
+      <NavBar />
+      <Box className={classes.parent1}>
+        <Box className={classes.parent}>
+          <ChatContainer>
+              <Online>
+                  <Box className={classes.online1}>
+                      <input type="text" placeholder="search user" className={classes.search} />
+                  </Box>
+                  <hr style={{marginTop: '0', color: 'red', width: '90%'}} className={classes.hideIt}/>
+                  {
+                      onlineUsers?.map((item:IOnlineUserInterface, index:number) =>
+                      <React.Fragment key={index}>
+                          <Box onClick={(e:any) => handleOnlineUsers(item)} className={classes.online}>
+                              <Img src={item.image} alt="image"/>
+                              <span className={classes.HiddenSpan}>
+                                  hello
+                              </span>
+                              <Head>
+                                  <TypoGraphy>
+                                      {item.username}
+                                  </TypoGraphy>
+                                  <TypoGraphy>
+                                      Open message
+                                  </TypoGraphy>
+                              </Head>
+                              <OnlineSpan>
+                                      {2}
+                              </OnlineSpan>
+                          </Box>
+                      </React.Fragment>
+                      )
+                  }
+                  {/* <Box className={classes.online}>
+                      <Img src={profile} alt="profile"/>
+                      <Head>
+                          <TypoGraphy>
+                              Rahila
+                          </TypoGraphy>
+                          <TypoGraphy>
+                              Rahila says 'hello'
+                          </TypoGraphy>
+                      </Head>
+                  </Box> */}
+              </Online>
+              <div className={classes.hideIt}></div>
+              <Box className={classes.chatBox}>
+                  <Box className={classes.title}>
+                      {currentUser._id && 
+                      <React.Fragment>
+                        <Img src={currentUser?.image} alt="profile"/>
+                        <span>
+                            {currentUser.username}
+                        </span>
+                      </React.Fragment>
+                      }
+                  </Box>
+                  <ChatMessages />
                   <ChatInputBox onSubmit={sendMessage}>
                           <ChatInput
                               onChange={handleTextareaChange}

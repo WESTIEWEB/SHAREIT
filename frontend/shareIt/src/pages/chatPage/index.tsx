@@ -13,7 +13,7 @@ const ChatPage = () => {
 
   const RenderChat = () => {
     if(role === 'admin') {
-      return <AdminChat currentUser={currentUser}/>
+      return <AdminChat />
     }
     else {
       return <div>Chat</div>

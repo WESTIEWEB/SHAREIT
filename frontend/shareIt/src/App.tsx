@@ -13,8 +13,6 @@ import AdminChat from '@/components/chat/adminSupport'
 
 function App() {
 
-  const user = JSON.parse(localStorage.getItem('userData') as string || '{}')
-  const currentUser = user?._id
   return (
     <>
       <ToastContainer />
